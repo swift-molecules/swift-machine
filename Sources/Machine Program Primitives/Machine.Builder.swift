@@ -12,10 +12,10 @@ extension Machine {
         /// The mutable capture store accumulated alongside the node graph.
         public var captures: Capture.Store<Mode>
 
-        /// Optional maximum machine-stack depth enforced at run time.
         // swift-linter:disable:next compound identifier
         // REASON: two-word stored property with no sibling sharing a leading
         // word (API-NAME-002 shape (a)); nothing to group into a namespace.
+        /// Optional maximum machine-stack depth enforced at run time.
         public let maxDepth: Int?
 
         /// Creates an empty builder, optionally bounding the machine-stack depth.

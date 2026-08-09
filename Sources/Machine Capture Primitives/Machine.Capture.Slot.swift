@@ -20,9 +20,11 @@ extension Machine.Capture {
             @usableFromInline
             // swift-linter:disable:next compound identifier
             // REASON: two-word stored property with no sibling sharing a leading
-            // word (API-NAME-002 shape (a)); debug-only diagnostic field, no
-            // namespace to group into.
-            let typeName: String
+            // word (API-NAME-002 shape (a)) — renamed from `typeName` to
+            // `debugName` precisely so it no longer shares the `type` leading
+            // word with the sibling `type: ObjectIdentifier` property above;
+            // debug-only diagnostic field, no namespace to group into.
+            let debugName: String
         #endif
 
         /// Creates a slot storing the given value.
@@ -40,7 +42,7 @@ extension Machine.Capture {
                 }
             )
             #if DEBUG
-                self.typeName = String(reflecting: T.self)
+                self.debugName = String(reflecting: T.self)
             #endif
         }
     }
@@ -60,7 +62,7 @@ extension Machine.Capture.Slot {
         #if DEBUG
             precondition(
                 type == ObjectIdentifier(T.self),
-                "Capture type mismatch: expected \(T.self), stored \(typeName)"
+                "Capture type mismatch: expected \(T.self), stored \(debugName)"
             )
         #else
             precondition(type == ObjectIdentifier(T.self))

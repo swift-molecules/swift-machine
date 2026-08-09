@@ -17,10 +17,10 @@ extension Machine {
         /// The frozen capture snapshot the interpreter reads at run time.
         public let captures: Machine.Capture.Frozen<Mode>
 
-        /// Optional maximum machine-stack depth enforced at run time.
         // swift-linter:disable:next compound identifier
         // REASON: two-word stored property with no sibling sharing a leading
         // word (API-NAME-002 shape (a)); nothing to group into a namespace.
+        /// Optional maximum machine-stack depth enforced at run time.
         public let maxDepth: Int?
 
         @usableFromInline
