@@ -18,16 +18,18 @@ extension Machine.Combine {
                 Machine.Value<Mode>,
                 Machine.Value<Mode>
             ) -> Machine.Value<Mode>
+    }
+}
 
-        /// Combines two values into one using the frozen captures.
-        @inlinable
-        public func combine(
-            using captures: borrowing Machine.Capture.Frozen<Mode>,
-            _ a: Machine.Value<Mode>,
-            _ b: Machine.Value<Mode>
-        ) -> Machine.Value<Mode> {
-            _combine(captures, a, b)
-        }
+extension Machine.Combine.Erased {
+    /// Combines two values into one using the frozen captures.
+    @inlinable
+    public func combine(
+        using captures: borrowing Machine.Capture.Frozen<Mode>,
+        _ a: Machine.Value<Mode>,
+        _ b: Machine.Value<Mode>
+    ) -> Machine.Value<Mode> {
+        _combine(captures, a, b)
     }
 }
 

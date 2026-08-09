@@ -44,7 +44,7 @@ struct `Machine.Value.Arena Tests` {
         var arena = Arena(capacity: 2)
 
         // Allocate more than initial capacity
-        for i in 0..<10 {
+        (0..<10).forEach { i in
             _ = arena.allocate(Value.make(i))
         }
 

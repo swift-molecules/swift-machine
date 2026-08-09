@@ -27,6 +27,9 @@ extension Machine.Value {
         var values: [Machine.Value<Mode>?]
 
         @usableFromInline
+        // swift-linter:disable:next compound identifier
+        // REASON: two-word stored property with no sibling sharing a leading
+        // word (API-NAME-002 shape (a)); nothing to group into a namespace.
         var nextSlot: UInt32
 
         /// Current arena generation (incremented on reset).
@@ -104,9 +107,7 @@ extension Machine.Value.Arena {
     /// The arena generation is incremented to detect stale handle usage.
     @inlinable
     public mutating func reset() {
-        for i in 0..<Int(nextSlot) {
-            values[i] = nil
-        }
+        (0..<Int(nextSlot)).forEach { values[$0] = nil }
         nextSlot = 0
         generation &+= 1  // Increment with wrapping
     }

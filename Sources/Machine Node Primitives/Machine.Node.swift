@@ -17,9 +17,6 @@ extension Machine {
     @safe
     public enum Node<Leaf, Failure: Swift.Error, Mode> {
 
-        /// A unique identifier for a node in the program.
-        public typealias ID = Graph.Node<Self>
-
         /// A primitive cursor operation.
         case leaf(Leaf)
 
@@ -66,6 +63,11 @@ extension Machine {
 
 extension Machine.Node: Sendable
 where Leaf: Sendable, Failure: Sendable, Mode: Sendable {}
+
+extension Machine.Node {
+    /// A unique identifier for a node in the program.
+    public typealias ID = Graph.Node<Self>
+}
 
 // MARK: - Graph Adjacency
 

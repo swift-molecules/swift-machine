@@ -17,15 +17,17 @@ extension Machine.Next {
                 borrowing Machine.Capture.Frozen<Mode>,
                 Machine.Value<Mode>
             ) -> NodeID
+    }
+}
 
-        /// Selects the next node ID for the given value using the frozen captures.
-        @inlinable
-        public func next(
-            using captures: borrowing Machine.Capture.Frozen<Mode>,
-            _ value: Machine.Value<Mode>
-        ) -> NodeID {
-            _next(captures, value)
-        }
+extension Machine.Next.Erased {
+    /// Selects the next node ID for the given value using the frozen captures.
+    @inlinable
+    public func next(
+        using captures: borrowing Machine.Capture.Frozen<Mode>,
+        _ value: Machine.Value<Mode>
+    ) -> NodeID {
+        _next(captures, value)
     }
 }
 

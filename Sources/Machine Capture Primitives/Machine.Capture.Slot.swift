@@ -1,15 +1,15 @@
 extension Machine.Capture {
-    // WHY: Category D — structural Sendable workaround (SP-5).
-    // WHY: Struct wraps _Storage (immutable after construction) + ObjectIdentifier.
-    // WHY: @unchecked forced because inner _Storage is itself @unchecked.
-    // WHEN TO REMOVE: When inner _Storage gains structural Sendable.
-    // TRACKING: unsafe-audit-findings.md Category D SP-5.
     /// Table-based erased storage for a captured value.
     ///
     /// `Slot` stores a type-erased value using raw pointer storage and a
     /// type-specialized destroy function. No existentials (`AnyObject`, `Any`)
     /// or dynamic casts (`as?`, `as!`) are used.
-    public struct Slot: @unchecked Sendable {
+    ///
+    /// `Slot` wraps `_Storage` (itself `@unchecked Sendable`, per
+    /// unsafe-audit-findings.md Category D SP-5) plus a plain `ObjectIdentifier`
+    /// and `String`, all of which are `Sendable` — so `Slot` conforms to plain
+    /// `Sendable` rather than asserting `@unchecked` a second time (IMPL-076).
+    public struct Slot: Sendable {
         @usableFromInline
         let type: ObjectIdentifier
 
@@ -18,6 +18,10 @@ extension Machine.Capture {
 
         #if DEBUG
             @usableFromInline
+            // swift-linter:disable:next compound identifier
+            // REASON: two-word stored property with no sibling sharing a leading
+            // word (API-NAME-002 shape (a)); debug-only diagnostic field, no
+            // namespace to group into.
             let typeName: String
         #endif
 
@@ -43,37 +47,6 @@ extension Machine.Capture {
 }
 
 extension Machine.Capture.Slot {
-    // WHY: Category D — structural Sendable workaround (SP-5) per [MEM-SAFE-024].
-    // WHY: Immutable pointer + @Sendable destroy function. UnsafeMutableRawPointer
-    // WHY: blocks structural inference. No synchronization.
-    // WHY: Encapsulation invariant per [MEM-SAFE-021] — `_Storage` is `@usableFromInline`
-    // WHY: but its raw-pointer storage is internal-only; consumers see only the
-    // WHY: type-safe `Slot` surface.
-    // WHEN TO REMOVE: When compiler gains structural Sendable through raw pointers.
-    // TRACKING: unsafe-audit-findings.md Category D SP-5.
-    /// Reference-counted storage for the erased payload.
-    @usableFromInline
-    final class _Storage: @unchecked Sendable {
-        @usableFromInline
-        let payload: UnsafeMutableRawPointer
-
-        @usableFromInline
-        let destroy: @Sendable (UnsafeMutableRawPointer) -> Void
-
-        @usableFromInline
-        init(
-            payload: UnsafeMutableRawPointer,
-            destroy: @escaping @Sendable (UnsafeMutableRawPointer) -> Void
-        ) {
-            unsafe (self.payload = payload)
-            unsafe (self.destroy = destroy)
-        }
-
-        deinit {
-            unsafe destroy(payload)
-        }
-    }
-
     /// Single choke-point for payload projection.
     ///
     /// All `assumingMemoryBound` calls for reading go through here.
