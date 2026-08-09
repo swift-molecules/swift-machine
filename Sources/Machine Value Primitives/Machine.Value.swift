@@ -34,148 +34,72 @@ extension Machine {
         @usableFromInline
         let storage: _Storage
 
-        // WHY: Category D — structural Sendable workaround (SP-5) per [MEM-SAFE-024].
-        // WHY: Immutable `let payload: UnsafeMutableRawPointer` + `let table: _Table`
-        // WHY: after construction. UnsafeMutableRawPointer blocks structural inference.
-        // WHY: No synchronization, no ~Copyable. Pointee is never mutated.
-        // WHY: Encapsulation invariant per [MEM-SAFE-021] — `_Storage` is `@usableFromInline`
-        // WHY: but its raw-pointer storage is internal-only; consumers see only the
-        // WHY: type-safe `Value` surface.
-        // WHEN TO REMOVE: When compiler gains structural Sendable through raw pointers.
-        // TRACKING: unsafe-audit-findings.md Category D SP-5.
-        /// Reference-counted storage with type-specialized destruction.
-        ///
-        /// This is NOT `AnyObject`—it's a concrete class type. No `as?` casting
-        /// is needed to access the payload.
-        @usableFromInline
-        final class _Storage: @unchecked Sendable {
-            @usableFromInline
-            let payload: UnsafeMutableRawPointer
-
-            @usableFromInline
-            let table: _Table
-
-            @usableFromInline
-            init(payload: UnsafeMutableRawPointer, table: _Table) {
-                unsafe (self.payload = payload)
-                self.table = table
-            }
-
-            deinit {
-                unsafe table.destroy(payload)
-            }
-        }
-
-        // SAFETY: `_Table` stores a single immutable `@Sendable` closure
-        // SAFETY: specialised at construction time for `T: ~Copyable`. The
-        // SAFETY: closure captures only type metadata (T's layout), not
-        // SAFETY: runtime values; the `Sendable` conformance is structural.
-        // SAFETY: Encapsulation invariant per [MEM-SAFE-021] — internal table
-        // SAFETY: type used only as `_Storage`'s table field.
-        /// Table of type-specialized operations.
-        ///
-        /// The `destroy` function captures only type metadata (`T`'s layout),
-        /// not user-provided runtime values. This is acceptable for Embedded
-        /// compatibility as it's equivalent to generic specialization—no closure
-        /// context with user data, only compiler-generated type information.
-        @usableFromInline
-        struct _Table: Sendable {
-            /// Destroys and deallocates the payload.
-            ///
-            /// Specialized for `T` at construction time.
-            @usableFromInline
-            let destroy: @Sendable (UnsafeMutableRawPointer) -> Void
-
-            @usableFromInline
-            init<T: ~Copyable>(_: T.Type) {
-                unsafe (self.destroy = { raw in
-                    unsafe raw.assumingMemoryBound(to: T.self).deinitialize(count: 1)
-                    unsafe raw.deallocate()
-                })
-            }
-        }
-
         @usableFromInline
         init(type: ObjectIdentifier, storage: _Storage) {
             self.type = type
             self.storage = storage
         }
+    }
+}
 
-        /// Single choke-point for payload projection.
-        ///
-        /// All `assumingMemoryBound` calls go through here, making the
-        /// unsafe binding structurally tied to the stored type id.
-        ///
-        /// - Precondition: `T` must match the type used at construction.
-        @usableFromInline
-        func _project<T: ~Copyable>(_: T.Type) -> UnsafePointer<T> {
-            unsafe UnsafePointer(storage.payload.assumingMemoryBound(to: T.self))
-        }
+// MARK: - Payload Projection
 
-        // MARK: - Borrow Access
+extension Machine.Value {
+    /// Single choke-point for payload projection.
+    ///
+    /// All `assumingMemoryBound` calls go through here, making the
+    /// unsafe binding structurally tied to the stored type id.
+    ///
+    /// - Precondition: `T` must match the type used at construction.
+    @usableFromInline
+    func _project<T: ~Copyable>(_: T.Type) -> UnsafePointer<T> {
+        unsafe UnsafePointer(storage.payload.assumingMemoryBound(to: T.self))
+    }
+}
 
-        /// Borrow access to the stored value via `_read`.
-        ///
-        /// Yields a borrow of the payload scoped to the accessor call.
-        /// Supports `~Copyable` payloads — no copy is made.
-        ///
-        ///     V._render(value[as: V.self], context: &ctx)
-        ///
-        /// - Precondition: `T` must match the type used at construction.
-        @inlinable
-        public subscript<T: ~Copyable>(as type: T.Type) -> T {
-            _read {
-                precondition(
-                    self.type == ObjectIdentifier(T.self),
-                    "Machine.Value type mismatch: expected \(T.self), got type with id \(self.type)"
-                )
-                yield unsafe _project(type).pointee
-            }
-        }
+// MARK: - Borrow Access
 
-        // MARK: - ~Escapable Ref
-
-        // SAFETY: Encapsulates unsafe internals behind a safe API; see
-        // SAFETY: [MEM-SAFE-024] for the absorber-pattern taxonomy.
-        /// A `~Escapable` reference to a stored value.
-        ///
-        /// Carries a lifetime dependency back to the `Value`, ensuring the
-        /// reference cannot outlive its storage. Access the payload via
-        /// the `value` property (`_read` accessor).
-        @safe
-        public struct Ref<T: ~Copyable>: ~Copyable, ~Escapable {
-            @usableFromInline
-            let _pointer: UnsafePointer<T>
-
-            @usableFromInline
-            init(_pointer: UnsafePointer<T>) {
-                unsafe (self._pointer = _pointer)
-            }
-
-            /// Borrow access to the referenced value.
-            public var value: T {
-                _read { yield unsafe _pointer.pointee }
-            }
-        }
-
-        /// Returns a `~Escapable` reference to the stored value.
-        ///
-        /// The returned `Ref` carries a lifetime dependency on `self`.
-        /// No closure needed — use `ref.value` to borrow.
-        ///
-        /// Uses `_overrideLifetime` (the "returning model") to bridge
-        /// from the raw pointer to the lifetime system.
-        ///
-        /// - Precondition: `T` must match the type used at construction.
-        @_lifetime(borrow self)
-        public func borrow<T: ~Copyable>(as type: T.Type) -> Ref<T> {
+extension Machine.Value {
+    /// Borrow access to the stored value via `_read`.
+    ///
+    /// Yields a borrow of the payload scoped to the accessor call.
+    /// Supports `~Copyable` payloads — no copy is made.
+    ///
+    ///     V._render(value[as: V.self], context: &ctx)
+    ///
+    /// - Precondition: `T` must match the type used at construction.
+    @inlinable
+    public subscript<T: ~Copyable>(as type: T.Type) -> T {
+        _read {
             precondition(
                 self.type == ObjectIdentifier(T.self),
                 "Machine.Value type mismatch: expected \(T.self), got type with id \(self.type)"
             )
-            let ref = unsafe Ref(_pointer: _project(type))
-            return unsafe _overrideLifetime(ref, borrowing: self)
+            yield unsafe _project(type).pointee
         }
+    }
+}
+
+// MARK: - ~Escapable Ref
+
+extension Machine.Value {
+    /// Returns a `~Escapable` reference to the stored value.
+    ///
+    /// The returned `Ref` carries a lifetime dependency on `self`.
+    /// No closure needed — use `ref.value` to borrow.
+    ///
+    /// Uses `_overrideLifetime` (the "returning model") to bridge
+    /// from the raw pointer to the lifetime system.
+    ///
+    /// - Precondition: `T` must match the type used at construction.
+    @_lifetime(borrow self)
+    public func borrow<T: ~Copyable>(as type: T.Type) -> Ref<T> {
+        precondition(
+            self.type == ObjectIdentifier(T.self),
+            "Machine.Value type mismatch: expected \(T.self), got type with id \(self.type)"
+        )
+        let ref = unsafe Ref(_pointer: _project(type))
+        return unsafe _overrideLifetime(ref, borrowing: self)
     }
 }
 

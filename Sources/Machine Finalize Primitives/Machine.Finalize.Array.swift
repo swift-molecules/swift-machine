@@ -17,15 +17,17 @@ extension Machine.Finalize {
                 borrowing Machine.Capture.Frozen<Mode>,
                 [Machine.Value<Mode>]
             ) -> Machine.Value<Mode>
+    }
+}
 
-        /// Converts the collected values into a single typed array value.
-        @inlinable
-        public func finalize(
-            using captures: borrowing Machine.Capture.Frozen<Mode>,
-            _ values: [Machine.Value<Mode>]
-        ) -> Machine.Value<Mode> {
-            _finalize(captures, values)
-        }
+extension Machine.Finalize.Array {
+    /// Converts the collected values into a single typed array value.
+    @inlinable
+    public func finalize(
+        using captures: borrowing Machine.Capture.Frozen<Mode>,
+        _ values: [Machine.Value<Mode>]
+    ) -> Machine.Value<Mode> {
+        _finalize(captures, values)
     }
 }
 

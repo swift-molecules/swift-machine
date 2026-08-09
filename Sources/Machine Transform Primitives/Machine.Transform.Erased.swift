@@ -14,15 +14,17 @@ extension Machine.Transform {
                 borrowing Machine.Capture.Frozen<Mode>,
                 Machine.Value<Mode>
             ) -> Machine.Value<Mode>
+    }
+}
 
-        /// Applies the transform to the given value using the frozen captures.
-        @inlinable
-        public func apply(
-            using captures: borrowing Machine.Capture.Frozen<Mode>,
-            _ value: Machine.Value<Mode>
-        ) -> Machine.Value<Mode> {
-            _apply(captures, value)
-        }
+extension Machine.Transform.Erased {
+    /// Applies the transform to the given value using the frozen captures.
+    @inlinable
+    public func apply(
+        using captures: borrowing Machine.Capture.Frozen<Mode>,
+        _ value: Machine.Value<Mode>
+    ) -> Machine.Value<Mode> {
+        _apply(captures, value)
     }
 }
 

@@ -17,6 +17,9 @@ extension Machine {
         /// The frozen capture snapshot the interpreter reads at run time.
         public let captures: Machine.Capture.Frozen<Mode>
 
+        // swift-linter:disable:next compound identifier
+        // REASON: two-word stored property with no sibling sharing a leading
+        // word (API-NAME-002 shape (a)); nothing to group into a namespace.
         /// Optional maximum machine-stack depth enforced at run time.
         public let maxDepth: Int?
 
@@ -30,19 +33,21 @@ extension Machine {
             self.captures = captures
             self.maxDepth = maxDepth
         }
-
-        /// Accesses a node by its ID.
-        @inlinable
-        public subscript(id: Node<Leaf, Failure, Mode>.ID) -> Node<Leaf, Failure, Mode> {
-            graph[id]
-        }
-
-        /// Analysis accessor for graph algorithms.
-        @inlinable
-        public var analyze: Graph.Sequential<Node<Leaf, Failure, Mode>, Node<Leaf, Failure, Mode>>.Analyze<[Node<Leaf, Failure, Mode>.ID]> {
-            graph.analyze(using: Node.extract)
-        }
     }
 }
 
 extension Machine.Program: Sendable where Leaf: Sendable, Mode: Sendable {}
+
+extension Machine.Program {
+    /// Accesses a node by its ID.
+    @inlinable
+    public subscript(id: Machine.Node<Leaf, Failure, Mode>.ID) -> Machine.Node<Leaf, Failure, Mode> {
+        graph[id]
+    }
+
+    /// Analysis accessor for graph algorithms.
+    @inlinable
+    public var analyze: Graph.Sequential<Machine.Node<Leaf, Failure, Mode>, Machine.Node<Leaf, Failure, Mode>>.Analyze<[Machine.Node<Leaf, Failure, Mode>.ID]> {
+        graph.analyze(using: Machine.Node.extract)
+    }
+}

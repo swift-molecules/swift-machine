@@ -17,15 +17,17 @@ extension Machine.Transform {
                 borrowing Machine.Capture.Frozen<Mode>,
                 Machine.Value<Mode>
             ) throws(Failure) -> Machine.Value<Mode>
+    }
+}
 
-        /// Applies the throwing transform to the given value using the frozen captures.
-        @inlinable
-        public func apply(
-            using captures: borrowing Machine.Capture.Frozen<Mode>,
-            _ value: Machine.Value<Mode>
-        ) throws(Failure) -> Machine.Value<Mode> {
-            try _apply(captures, value)
-        }
+extension Machine.Transform.Throwing {
+    /// Applies the throwing transform to the given value using the frozen captures.
+    @inlinable
+    public func apply(
+        using captures: borrowing Machine.Capture.Frozen<Mode>,
+        _ value: Machine.Value<Mode>
+    ) throws(Failure) -> Machine.Value<Mode> {
+        try _apply(captures, value)
     }
 }
 

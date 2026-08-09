@@ -18,11 +18,13 @@ extension Machine.Capture {
         public init() {
             self.slots = []
         }
+    }
+}
 
-        /// Freezes the store into an immutable `Frozen` for program execution.
-        @inlinable
-        public consuming func freeze() -> Frozen<Mode> {
-            Frozen(__slots: slots)
-        }
+extension Machine.Capture.Store {
+    /// Freezes the store into an immutable `Frozen` for program execution.
+    @inlinable
+    public consuming func freeze() -> Machine.Capture.Frozen<Mode> {
+        Machine.Capture.Frozen(__slots: slots)
     }
 }

@@ -8,9 +8,11 @@ extension Machine.Capture {
         init(_ raw: RawID) {
             self.raw = raw
         }
-
-        /// The underlying slot index.
-        @inlinable
-        public var rawValue: Int { raw.rawValue }
     }
+}
+
+extension Machine.Capture.ID {
+    /// The underlying slot index.
+    @inlinable
+    public var rawValue: Int { raw.rawValue }
 }
