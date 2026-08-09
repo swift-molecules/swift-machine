@@ -24,6 +24,13 @@ extension Machine.Capture {
             // `debugName` precisely so it no longer shares the `type` leading
             // word with the sibling `type: ObjectIdentifier` property above;
             // debug-only diagnostic field, no namespace to group into.
+            //
+            // `String(reflecting:)` requires runtime type metadata that
+            // Embedded Swift does not provide, so an Embedded DEBUG build
+            // stores a fixed, non-reflective placeholder instead — the
+            // mismatch precondition itself (see `read(_:)` below) still
+            // fires on every platform; only the diagnostic's type name is
+            // unavailable under Embedded.
             let debugName: String
         #endif
 
@@ -42,7 +49,11 @@ extension Machine.Capture {
                 }
             )
             #if DEBUG
-                self.debugName = String(reflecting: T.self)
+                #if hasFeature(Embedded)
+                    self.debugName = "<embedded: reflection unavailable>"
+                #else
+                    self.debugName = String(reflecting: T.self)
+                #endif
             #endif
         }
     }
