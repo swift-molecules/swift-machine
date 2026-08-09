@@ -81,13 +81,13 @@ let package = Package(
         .target(
             name: "Machine Value Primitives",
             dependencies: [
-                "Machine Primitive",
+                .target(name: "Machine Primitive"),
             ]
         ),
         .target(
             name: "Machine Capture Primitives",
             dependencies: [
-                "Machine Primitive",
+                .target(name: "Machine Primitive"),
             ]
         ),
 
@@ -96,29 +96,29 @@ let package = Package(
         .target(
             name: "Machine Transform Primitives",
             dependencies: [
-                "Machine Value Primitives",
-                "Machine Capture Primitives",
+                .target(name: "Machine Value Primitives"),
+                .target(name: "Machine Capture Primitives"),
             ]
         ),
         .target(
             name: "Machine Combine Primitives",
             dependencies: [
-                "Machine Value Primitives",
-                "Machine Capture Primitives",
+                .target(name: "Machine Value Primitives"),
+                .target(name: "Machine Capture Primitives"),
             ]
         ),
         .target(
             name: "Machine Next Primitives",
             dependencies: [
-                "Machine Value Primitives",
-                "Machine Capture Primitives",
+                .target(name: "Machine Value Primitives"),
+                .target(name: "Machine Capture Primitives"),
             ]
         ),
         .target(
             name: "Machine Finalize Primitives",
             dependencies: [
-                "Machine Value Primitives",
-                "Machine Capture Primitives",
+                .target(name: "Machine Value Primitives"),
+                .target(name: "Machine Capture Primitives"),
             ]
         ),
 
@@ -127,21 +127,21 @@ let package = Package(
         .target(
             name: "Machine Frame Primitives",
             dependencies: [
-                "Machine Value Primitives",
-                "Machine Transform Primitives",
-                "Machine Combine Primitives",
-                "Machine Next Primitives",
-                "Machine Finalize Primitives",
+                .target(name: "Machine Value Primitives"),
+                .target(name: "Machine Transform Primitives"),
+                .target(name: "Machine Combine Primitives"),
+                .target(name: "Machine Next Primitives"),
+                .target(name: "Machine Finalize Primitives"),
             ]
         ),
         .target(
             name: "Machine Node Primitives",
             dependencies: [
-                "Machine Value Primitives",
-                "Machine Transform Primitives",
-                "Machine Combine Primitives",
-                "Machine Next Primitives",
-                "Machine Finalize Primitives",
+                .target(name: "Machine Value Primitives"),
+                .target(name: "Machine Transform Primitives"),
+                .target(name: "Machine Combine Primitives"),
+                .target(name: "Machine Next Primitives"),
+                .target(name: "Machine Finalize Primitives"),
                 // Node.ID = Graph.Node, Adjacency.Extract — declared directly per [MOD-038]
                 // (previously reached transitively via the dissolved Core funnel).
                 .product(name: "Graph Sequential Primitives", package: "swift-graph-primitives"),
@@ -150,8 +150,8 @@ let package = Package(
         .target(
             name: "Machine Program Primitives",
             dependencies: [
-                "Machine Node Primitives",
-                "Machine Capture Primitives",
+                .target(name: "Machine Node Primitives"),
+                .target(name: "Machine Capture Primitives"),
                 // Program/Builder use Graph.Sequential storage directly per [MOD-038]
                 // (previously reached transitively via the dissolved Core funnel).
                 .product(name: "Graph Sequential Primitives", package: "swift-graph-primitives"),
@@ -163,7 +163,7 @@ let package = Package(
         .target(
             name: "Machine Convenience Primitives",
             dependencies: [
-                "Machine Program Primitives",
+                .target(name: "Machine Program Primitives"),
             ]
         ),
 
@@ -172,17 +172,17 @@ let package = Package(
         .target(
             name: "Machine Primitives",
             dependencies: [
-                "Machine Primitive",
-                "Machine Value Primitives",
-                "Machine Capture Primitives",
-                "Machine Transform Primitives",
-                "Machine Combine Primitives",
-                "Machine Next Primitives",
-                "Machine Finalize Primitives",
-                "Machine Frame Primitives",
-                "Machine Node Primitives",
-                "Machine Program Primitives",
-                "Machine Convenience Primitives",
+                .target(name: "Machine Primitive"),
+                .target(name: "Machine Value Primitives"),
+                .target(name: "Machine Capture Primitives"),
+                .target(name: "Machine Transform Primitives"),
+                .target(name: "Machine Combine Primitives"),
+                .target(name: "Machine Next Primitives"),
+                .target(name: "Machine Finalize Primitives"),
+                .target(name: "Machine Frame Primitives"),
+                .target(name: "Machine Node Primitives"),
+                .target(name: "Machine Program Primitives"),
+                .target(name: "Machine Convenience Primitives"),
                 // Narrowed to Graph Primitives: the Machine umbrella only ever
                 // surfaces Graph.Node/Adjacency/Sequential/Analyze (all in Core).
                 // Depending on the full Graph umbrella over-broadly re-exported the
@@ -195,42 +195,42 @@ let package = Package(
 
         .testTarget(
             name: "Machine Value Primitives Tests",
-            dependencies: ["Machine Primitives"]
+            dependencies: [.target(name: "Machine Primitives")]
         ),
         .testTarget(
             name: "Machine Combine Primitives Tests",
-            dependencies: ["Machine Primitives"]
+            dependencies: [.target(name: "Machine Primitives")]
         ),
         .testTarget(
             name: "Machine Transform Primitives Tests",
-            dependencies: ["Machine Primitives"]
+            dependencies: [.target(name: "Machine Primitives")]
         ),
         .testTarget(
             name: "Machine Next Primitives Tests",
-            dependencies: ["Machine Primitives"]
+            dependencies: [.target(name: "Machine Primitives")]
         ),
         .testTarget(
             name: "Machine Finalize Primitives Tests",
-            dependencies: ["Machine Primitives"]
+            dependencies: [.target(name: "Machine Primitives")]
         ),
         .testTarget(
             name: "Machine Frame Primitives Tests",
-            dependencies: ["Machine Primitives"]
+            dependencies: [.target(name: "Machine Primitives")]
         ),
         .testTarget(
             name: "Machine Node Primitives Tests",
-            dependencies: ["Machine Primitives"]
+            dependencies: [.target(name: "Machine Primitives")]
         ),
         .testTarget(
             name: "Machine Program Primitives Tests",
-            dependencies: ["Machine Primitives"]
+            dependencies: [.target(name: "Machine Primitives")]
         ),
 
         // MARK: - Test Support
         .target(
             name: "Machine Primitives Test Support",
             dependencies: [
-                "Machine Primitives",
+                .target(name: "Machine Primitives"),
                 .product(name: "Graph Primitives Test Support", package: "swift-graph-primitives"),
             ],
             path: "Tests/Support"
