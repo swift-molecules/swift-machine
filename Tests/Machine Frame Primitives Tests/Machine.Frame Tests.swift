@@ -21,6 +21,11 @@ extension Machine.Capture.Store where Mode == Machine.Capture.Mode.Reference {
     // absorbs the closure at the call site so the outer generic
     // `insert<Value: Sendable>` is never specialized directly against an
     // inline-cast closure type.
+    // Tracked at `swift-institute/Issues#104`; reduced repro at
+    // `swift-institute/Experiments/generic-specializer-sendable-closure-cast-release/`
+    // (a distinct compiler bug from the SILGen crash above, not the same
+    // record — no typed throws or `-Onone` required, crashes in
+    // `GenericSpecializer` rather than SILGen).
     // WHEN TO REMOVE: once release-mode specialization of this shape no
     // longer crashes the frontend.
     fileprivate mutating func insert<In: Sendable, Out: Sendable>(
