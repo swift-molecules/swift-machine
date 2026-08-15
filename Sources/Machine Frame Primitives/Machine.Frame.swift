@@ -29,13 +29,27 @@ extension Machine {
         case oneOf(alternatives: [NodeID], index: Int, savedCheckpoint: Checkpoint)
 
         /// Accumulation frame for many - stores handles to accumulated results.
-        case many(child: NodeID, savedCheckpoint: Checkpoint, resultHandles: [Value<Mode>.Handle], finalize: Finalize.Array<Mode>)
+        case many(
+            child: NodeID,
+            savedCheckpoint: Checkpoint,
+            resultHandles: [Value<Mode>.Handle],
+            finalize: Finalize.Array<Mode>
+        )
 
         /// Fold frame - accumulates without allocation using combine function.
-        case fold(child: NodeID, savedCheckpoint: Checkpoint, accumulatorHandle: Value<Mode>.Handle, combine: Combine.Erased<Mode>)
+        case fold(
+            child: NodeID,
+            savedCheckpoint: Checkpoint,
+            accumulatorHandle: Value<Mode>.Handle,
+            combine: Combine.Erased<Mode>
+        )
 
         /// Optional frame - stores handle to none value for backtracking.
-        case optional(savedCheckpoint: Checkpoint, wrapSome: Transform.Erased<Mode>, noneHandle: Value<Mode>.Handle)
+        case optional(
+            savedCheckpoint: Checkpoint,
+            wrapSome: Transform.Erased<Mode>,
+            noneHandle: Value<Mode>.Handle
+        )
 
         /// Marker for recursive call return.
         case recursiveExit

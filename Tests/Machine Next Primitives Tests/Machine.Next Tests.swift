@@ -108,7 +108,9 @@ struct `Machine.Next.Erased Tests` {
         struct Choice: Sendable { var index: Int }
 
         var store = Store()
-        let captureID = store.insert({ (choice: Choice) in choice.index } as @Sendable (Choice) -> Int)
+        let captureID = store.insert(
+            { (choice: Choice) in choice.index } as @Sendable (Choice) -> Int
+        )
         let next = Machine.Next.Erased<Mode, Int>(capture: captureID)
         let frozen = store.freeze()
 
@@ -155,7 +157,9 @@ struct `Machine.Next.Erased Tests` {
     @Test
     func `next with array count`() {
         var store = Store()
-        let captureID = store.insert({ (arr: [String]) in arr.count } as @Sendable ([String]) -> Int)
+        let captureID = store.insert(
+            { (arr: [String]) in arr.count } as @Sendable ([String]) -> Int
+        )
         let next = Machine.Next.Erased<Mode, Int>(capture: captureID)
         let frozen = store.freeze()
 

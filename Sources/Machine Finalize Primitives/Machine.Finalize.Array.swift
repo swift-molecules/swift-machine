@@ -40,7 +40,8 @@ extension Machine.Finalize.Array where Mode == Machine.Capture.Mode.Reference {
         let raw = capture.raw
         self.capture = raw
         self._finalize = { captures, values in
-            captures.withRaw(raw, as: (@Sendable ([Machine.Value<Mode>]) -> [T]).self) { finalizeFn in
+            captures.withRaw(raw, as: (@Sendable ([Machine.Value<Mode>]) -> [T]).self) {
+                finalizeFn in
                 Machine.Value<Mode>.make(finalizeFn(values))
             }
         }
