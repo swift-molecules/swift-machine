@@ -41,13 +41,17 @@ extension Machine.Program: Sendable where Leaf: Sendable, Mode: Sendable {}
 extension Machine.Program {
     /// Accesses a node by its ID.
     @inlinable
-    public subscript(id: Machine.Node<Leaf, Failure, Mode>.ID) -> Machine.Node<Leaf, Failure, Mode> {
+    public subscript(id: Machine.Node<Leaf, Failure, Mode>.ID) -> Machine.Node<Leaf, Failure, Mode>
+    {
         graph[id]
     }
 
     /// Analysis accessor for graph algorithms.
     @inlinable
-    public var analyze: Graph.Sequential<Machine.Node<Leaf, Failure, Mode>, Machine.Node<Leaf, Failure, Mode>>.Analyze<[Machine.Node<Leaf, Failure, Mode>.ID]> {
+    public var analyze:
+        Graph.Sequential<Machine.Node<Leaf, Failure, Mode>, Machine.Node<Leaf, Failure, Mode>>
+            .Analyze<[Machine.Node<Leaf, Failure, Mode>.ID]>
+    {
         graph.analyze(using: Machine.Node.extract)
     }
 }

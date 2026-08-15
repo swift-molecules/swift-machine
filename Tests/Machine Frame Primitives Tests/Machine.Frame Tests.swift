@@ -115,7 +115,10 @@ struct `Machine.Frame Tests` {
         let combine = Machine.Combine.Erased<Mode>(capture: captureID)
         let frozen = store.freeze()
 
-        let seqState = Machine.Frame<NodeID, Checkpoint, Mode, TestError, Never>.Sequence.second(b: 5, combine: combine)
+        let seqState = Machine.Frame<NodeID, Checkpoint, Mode, TestError, Never>.Sequence.second(
+            b: 5,
+            combine: combine
+        )
         let frame: TestFrame = .sequence(seqState)
 
         if case .sequence(let state) = frame {
@@ -135,7 +138,11 @@ struct `Machine.Frame Tests` {
     func `oneOf stores alternatives and checkpoint`() {
         let alternatives: [NodeID] = [1, 2, 3, 4]
         let checkpoint: Checkpoint = 100
-        let frame: TestFrame = .oneOf(alternatives: alternatives, index: 1, savedCheckpoint: checkpoint)
+        let frame: TestFrame = .oneOf(
+            alternatives: alternatives,
+            index: 1,
+            savedCheckpoint: checkpoint
+        )
 
         if case .oneOf(let alts, let idx, let cp) = frame {
             #expect(alts == [1, 2, 3, 4])
@@ -223,11 +230,16 @@ struct `Machine.Frame.Sequence Tests` {
     @Test
     func `second stores node ID and combine`() {
         var store = Store()
-        let captureID = store.insert({ (a: String, b: String) in a + b } as @Sendable (String, String) -> String)
+        let captureID = store.insert(
+            { (a: String, b: String) in a + b } as @Sendable (String, String) -> String
+        )
         let combine = Machine.Combine.Erased<Mode>(capture: captureID)
         let frozen = store.freeze()
 
-        let seq: Machine.Frame<NodeID, Int, Mode, Never, Never>.Sequence = .second(b: 10, combine: combine)
+        let seq: Machine.Frame<NodeID, Int, Mode, Never, Never>.Sequence = .second(
+            b: 10,
+            combine: combine
+        )
 
         if case .second(let b, let c) = seq {
             #expect(b == 10)
@@ -321,8 +333,16 @@ struct `Machine.Frame with Extra Tests` {
         #expect(frames.count == 4)
 
         if case .map = frames[0] {} else { Issue.record("Expected map at 0") }
-        if case .extra(let e) = frames[1] { #expect(e.nodeId == 1) } else { Issue.record("Expected extra at 1") }
+        if case .extra(let e) = frames[1] {
+            #expect(e.nodeId == 1)
+        } else {
+            Issue.record("Expected extra at 1")
+        }
         if case .recursiveExit = frames[2] {} else { Issue.record("Expected recursiveExit at 2") }
-        if case .extra(let e) = frames[3] { #expect(e.nodeId == 2) } else { Issue.record("Expected extra at 3") }
+        if case .extra(let e) = frames[3] {
+            #expect(e.nodeId == 2)
+        } else {
+            Issue.record("Expected extra at 3")
+        }
     }
 }

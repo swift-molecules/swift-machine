@@ -140,7 +140,9 @@ struct `Machine.Transform.Erased Tests` {
     @Test
     func `transform array`() {
         var store = Store()
-        let captureID = store.insert({ (arr: [Int]) in arr.map { $0 * 2 } } as @Sendable ([Int]) -> [Int])
+        let captureID = store.insert(
+            { (arr: [Int]) in arr.map { $0 * 2 } } as @Sendable ([Int]) -> [Int]
+        )
         let transform = Transform(capture: captureID)
         let frozen = store.freeze()
 

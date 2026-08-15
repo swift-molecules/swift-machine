@@ -243,7 +243,9 @@ struct `Machine.Program Tests` {
 
         let first = builder.allocate(TestNode.leaf(.readByte))
         let second = builder.allocate(TestNode.leaf(.readInt))
-        let captureID = builder.captures.insert({ (a: Int, b: Int) in (a, b) } as @Sendable (Int, Int) -> (Int, Int))
+        let captureID = builder.captures.insert(
+            { (a: Int, b: Int) in (a, b) } as @Sendable (Int, Int) -> (Int, Int)
+        )
         let combine = Machine.Combine.Erased<Mode>(capture: captureID)
 
         let seqId = builder.allocate(TestNode.sequence(a: first, b: second, combine: combine))
@@ -281,11 +283,15 @@ struct `Machine.Program Tests` {
         var builder = TestBuilder()
 
         let child = builder.allocate(TestNode.leaf(.readByte))
-        let captureID = builder.captures.insert({ (x: Int) in x as Int? } as @Sendable (Int) -> Int?)
+        let captureID = builder.captures.insert(
+            { (x: Int) in x as Int? } as @Sendable (Int) -> Int?
+        )
         let wrapSome = Machine.Transform.Erased<Mode>(capture: captureID)
         let noneValue = Value.make(Int?(nil))
 
-        let optId = builder.allocate(TestNode.optional(child: child, wrapSome: wrapSome, noneValue: noneValue))
+        let optId = builder.allocate(
+            TestNode.optional(child: child, wrapSome: wrapSome, noneValue: noneValue)
+        )
 
         let program = builder.build()
 

@@ -38,13 +38,16 @@ extension Machine.Builder {
 
     /// Appends a node to the program graph, returning its ID.
     @inlinable
-    public mutating func allocate(_ node: Machine.Node<Leaf, Failure, Mode>) -> Machine.Node<Leaf, Failure, Mode>.ID {
+    public mutating func allocate(
+        _ node: Machine.Node<Leaf, Failure, Mode>
+    ) -> Machine.Node<Leaf, Failure, Mode>.ID {
         storage.allocate(node)
     }
 
     /// Access/patch a node by ID (for hole patching).
     @inlinable
-    public subscript(id: Machine.Node<Leaf, Failure, Mode>.ID) -> Machine.Node<Leaf, Failure, Mode> {
+    public subscript(id: Machine.Node<Leaf, Failure, Mode>.ID) -> Machine.Node<Leaf, Failure, Mode>
+    {
         get { storage[id] }
         set { storage[id] = newValue }
     }

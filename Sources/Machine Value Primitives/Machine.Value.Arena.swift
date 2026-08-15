@@ -52,7 +52,9 @@ extension Machine.Value.Arena {
     /// The returned handle includes the current arena generation for
     /// ABA prevention.
     @inlinable
-    public mutating func allocate(_ value: consuming Machine.Value<Mode>) -> Machine.Value<Mode>.Handle {
+    public mutating func allocate(
+        _ value: consuming Machine.Value<Mode>
+    ) -> Machine.Value<Mode>.Handle {
         let slot = nextSlot
         if Int(slot) >= values.count {
             values.append(contentsOf: repeatElement(nil, count: values.count))
@@ -66,7 +68,9 @@ extension Machine.Value.Arena {
     @inlinable
     package func validateHandle(_ handle: Machine.Value<Mode>.Handle, operation: StaticString) {
         guard handle.generation == generation else {
-            fatalError("Arena.\(operation): stale handle (generation \(handle.generation), current \(generation))")
+            fatalError(
+                "Arena.\(operation): stale handle (generation \(handle.generation), current \(generation))"
+            )
         }
     }
 

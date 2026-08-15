@@ -48,7 +48,9 @@ struct `Machine.Combine.Erased Tests` {
     @Test
     func `combine different types into tuple`() {
         var store = Store()
-        let captureID = store.insert({ (a: Int, b: String) in (a, b) } as @Sendable (Int, String) -> (Int, String))
+        let captureID = store.insert(
+            { (a: Int, b: String) in (a, b) } as @Sendable (Int, String) -> (Int, String)
+        )
         let combine = Combine(capture: captureID)
         let frozen = store.freeze()
 
@@ -64,7 +66,9 @@ struct `Machine.Combine.Erased Tests` {
     @Test
     func `combine strings with concatenation`() {
         var store = Store()
-        let captureID = store.insert({ (a: String, b: String) in a + b } as @Sendable (String, String) -> String)
+        let captureID = store.insert(
+            { (a: String, b: String) in a + b } as @Sendable (String, String) -> String
+        )
         let combine = Combine(capture: captureID)
         let frozen = store.freeze()
 
@@ -82,7 +86,9 @@ struct `Machine.Combine.Erased Tests` {
         }
 
         var store = Store()
-        let captureID = store.insert({ (x: Int, y: Int) in Point(x: x, y: y) } as @Sendable (Int, Int) -> Point)
+        let captureID = store.insert(
+            { (x: Int, y: Int) in Point(x: x, y: y) } as @Sendable (Int, Int) -> Point
+        )
         let combine = Combine(capture: captureID)
         let frozen = store.freeze()
 
@@ -98,7 +104,9 @@ struct `Machine.Combine.Erased Tests` {
     @Test
     func `combine arrays into combined array`() {
         var store = Store()
-        let captureID = store.insert({ (a: [Int], b: [Int]) in a + b } as @Sendable ([Int], [Int]) -> [Int])
+        let captureID = store.insert(
+            { (a: [Int], b: [Int]) in a + b } as @Sendable ([Int], [Int]) -> [Int]
+        )
         let combine = Combine(capture: captureID)
         let frozen = store.freeze()
 
@@ -111,7 +119,9 @@ struct `Machine.Combine.Erased Tests` {
     @Test
     func `combine discarding first value`() {
         var store = Store()
-        let captureID = store.insert({ (_: Int, b: String) in b } as @Sendable (Int, String) -> String)
+        let captureID = store.insert(
+            { (_: Int, b: String) in b } as @Sendable (Int, String) -> String
+        )
         let combine = Combine(capture: captureID)
         let frozen = store.freeze()
 
@@ -124,7 +134,9 @@ struct `Machine.Combine.Erased Tests` {
     @Test
     func `combine discarding second value`() {
         var store = Store()
-        let captureID = store.insert({ (a: String, _: Int) in a } as @Sendable (String, Int) -> String)
+        let captureID = store.insert(
+            { (a: String, _: Int) in a } as @Sendable (String, Int) -> String
+        )
         let combine = Combine(capture: captureID)
         let frozen = store.freeze()
 
