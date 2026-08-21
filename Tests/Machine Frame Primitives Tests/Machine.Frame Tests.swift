@@ -2,9 +2,6 @@ import Testing
 
 @testable import Machine_Primitives
 
-// WORKAROUND for a Swift 6.3.1 SILGen crash (signal 5) on
-// `store.insert({ ... } as @Sendable (T) throws(E) -> U)`. See
-// `swift-institute/Experiments/silgen-sendable-typed-throws-closure-cast/`.
 extension Machine.Capture.Store where Mode == Machine.Capture.Mode.Reference {
     fileprivate mutating func insert<In: Sendable, Out: Sendable, E: Swift.Error>(
         _ fn: @Sendable @escaping (In) throws(E) -> Out
@@ -13,21 +10,6 @@ extension Machine.Capture.Store where Mode == Machine.Capture.Mode.Reference {
         return dispatchToBase(fn)
     }
 
-    // WORKAROUND for a Swift 6.4 release-mode `GenericSpecializer` crash
-    // (`TypeSubstCloner` assertion in `ApplySiteCloningHelper`) on
-    // `store.insert({ ... } as @Sendable (T...) -> U)` — the non-throwing
-    // sibling of the SILGen crash above, hit only under `-O` / release
-    // builds. Same shape, same fix: a concrete function-typed overload
-    // absorbs the closure at the call site so the outer generic
-    // `insert<Value: Sendable>` is never specialized directly against an
-    // inline-cast closure type.
-    // Tracked at `swift-institute/Issues#104`; reduced repro at
-    // `swift-institute/Experiments/generic-specializer-sendable-closure-cast-release/`
-    // (a distinct compiler bug from the SILGen crash above, not the same
-    // record — no typed throws or `-Onone` required, crashes in
-    // `GenericSpecializer` rather than SILGen).
-    // WHEN TO REMOVE: once release-mode specialization of this shape no
-    // longer crashes the frontend.
     fileprivate mutating func insert<In: Sendable, Out: Sendable>(
         _ fn: @Sendable @escaping (In) -> Out
     ) -> Machine.Capture.ID<@Sendable (In) -> Out> {
@@ -212,7 +194,7 @@ struct `Machine.Frame Tests` {
         let frame: TestFrame = .recursiveExit
 
         if case .recursiveExit = frame {
-            // Success
+
         } else {
             Issue.record("Expected recursiveExit frame")
         }
@@ -312,7 +294,7 @@ struct `Machine.Frame with Extra Tests` {
         let frame: FrameWithExtra = .map(transform: transform)
 
         if case .map = frame {
-            // Success
+
         } else {
             Issue.record("Expected map frame")
         }

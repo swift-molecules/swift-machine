@@ -1,14 +1,8 @@
 extension Machine.Finalize {
-    // SAFETY: Safe by construction — backing storage uses only stdlib
-    // SAFETY: safe types; `@safe` documents that this type performs no
-    // SAFETY: unsafe operations.
-    /// A type-erased array finalization operation.
-    ///
-    /// Converts a collection of values into a single typed array value,
-    /// used for the `many` combinator.
+
     @safe
     public struct Array<Mode>: Sendable {
-        /// The capture slot holding the underlying typed finalize function.
+
         public let capture: Machine.Capture.RawID
 
         @usableFromInline
@@ -21,7 +15,7 @@ extension Machine.Finalize {
 }
 
 extension Machine.Finalize.Array {
-    /// Converts the collected values into a single typed array value.
+
     @inlinable
     public func finalize(
         using captures: borrowing Machine.Capture.Frozen<Mode>,
@@ -32,7 +26,7 @@ extension Machine.Finalize.Array {
 }
 
 extension Machine.Finalize.Array where Mode == Machine.Capture.Mode.Reference {
-    /// Creates an erased finalizer from a captured `@Sendable` typed function (Reference mode).
+
     @inlinable
     public init<T: Sendable>(
         capture: Machine.Capture.ID<@Sendable ([Machine.Value<Mode>]) -> [T]>
@@ -47,7 +41,6 @@ extension Machine.Finalize.Array where Mode == Machine.Capture.Mode.Reference {
         }
     }
 
-    /// Creates and captures a finalizer that extracts `[T]` from the erased values (Reference mode).
     @inlinable
     public init<T: Sendable>(
         elementType: T.Type,
@@ -62,7 +55,7 @@ extension Machine.Finalize.Array where Mode == Machine.Capture.Mode.Reference {
 }
 
 extension Machine.Finalize.Array where Mode == Machine.Capture.Mode.Unchecked {
-    /// Creates an erased finalizer from a captured typed function (Unchecked mode).
+
     @inlinable
     public init<T>(
         capture: Machine.Capture.ID<([Machine.Value<Mode>]) -> [T]>
@@ -76,7 +69,6 @@ extension Machine.Finalize.Array where Mode == Machine.Capture.Mode.Unchecked {
         }
     }
 
-    /// Creates and captures a finalizer that extracts `[T]` from the erased values (Unchecked mode).
     @inlinable
     public init<T>(
         elementType: T.Type,

@@ -1,7 +1,5 @@
 extension Machine.Capture.Store where Mode == Machine.Capture.Mode.Unchecked {
-    /// Inserts a value and returns a typed capture ID.
-    ///
-    /// No Sendable constraint—use Unchecked mode when Sendable is not required.
+
     @inlinable
     public mutating func insert<Value>(_ value: Value) -> Machine.Capture.ID<Value> {
         let raw = Machine.Capture.RawID(slots.count)
@@ -9,7 +7,6 @@ extension Machine.Capture.Store where Mode == Machine.Capture.Mode.Unchecked {
         return Machine.Capture.ID<Value>(raw)
     }
 
-    /// Accesses a captured value by its typed ID.
     @inlinable
     public func with<Value, R>(
         _ id: Machine.Capture.ID<Value>,
@@ -20,7 +17,6 @@ extension Machine.Capture.Store where Mode == Machine.Capture.Mode.Unchecked {
         return body(value)
     }
 
-    /// Accesses a captured value by raw ID with explicit type.
     @usableFromInline
     func withRaw<Value, R>(
         _ raw: Machine.Capture.RawID,
@@ -32,7 +28,6 @@ extension Machine.Capture.Store where Mode == Machine.Capture.Mode.Unchecked {
         return body(value)
     }
 
-    /// Accesses a captured value by raw ID with typed throws.
     @usableFromInline
     func withRawThrowing<Value, R, E: Swift.Error>(
         _ raw: Machine.Capture.RawID,

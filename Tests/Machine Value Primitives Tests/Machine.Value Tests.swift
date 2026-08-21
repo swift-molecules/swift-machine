@@ -35,8 +35,7 @@ struct `Machine.Value Tests` {
 
     @Test
     func `subscript precondition-checks type mismatch`() {
-        // The subscript uses precondition, so wrong-type access would trap.
-        // We verify correct-type access works; wrong-type trapping is a precondition guarantee.
+
         let value = Value.make(42)
         let extracted = value[as: Int.self]
         #expect(extracted == 42)
@@ -44,8 +43,7 @@ struct `Machine.Value Tests` {
 
     @Test
     func `subscript precondition-checks similar but different types`() {
-        // Int32 vs Int are different types — subscript would trap on mismatch.
-        // We verify correct-type access works.
+
         let value = Value.make(Int32(42))
         let extracted = value[as: Int32.self]
         #expect(extracted == 42)

@@ -2,20 +2,6 @@ import Testing
 
 @testable import Machine_Primitives
 
-// WORKAROUND for a Swift 6.4 release-mode `GenericSpecializer` crash
-// (`TypeSubstCloner` assertion in `ApplySiteCloningHelper`) on
-// `store.insert({ ... } as @Sendable (T...) -> U)`, hit only under `-O` /
-// release builds. A concrete function-typed overload absorbs the closure
-// at the call site so the outer generic `insert<Value: Sendable>` is
-// never specialized directly against an inline-cast closure type.
-// Tracked at `swift-institute/Issues#104`; reduced repro at
-// `swift-institute/Experiments/generic-specializer-sendable-closure-cast-release/`.
-// See `swift-institute/Experiments/silgen-sendable-typed-throws-closure-cast/`
-// for the analogous (SILGen, not release-optimizer, distinct-record) sibling
-// crash — that repro requires typed throws and reproduces at `-Onone`; this
-// one requires neither.
-// WHEN TO REMOVE: once release-mode specialization of this shape no
-// longer crashes the frontend.
 extension Machine.Capture.Store where Mode == Machine.Capture.Mode.Reference {
     fileprivate mutating func insert<In: Sendable, Out: Sendable>(
         _ fn: @Sendable @escaping (In) -> Out
@@ -192,13 +178,10 @@ struct `Machine.Program Tests` {
     func `forward reference pattern`() {
         var builder = TestBuilder()
 
-        // Allocate a hole for forward reference
         let recursiveId = builder.allocate(TestNode.hole)
 
-        // Use the ID before filling it in
         let bodyId = builder.allocate(TestNode.ref(recursiveId))
 
-        // Fill in the hole via builder subscript
         builder[recursiveId] = .leaf(.readByte)
 
         let program = builder.build()

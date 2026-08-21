@@ -2,18 +2,6 @@ import Testing
 
 @testable import Machine_Primitives
 
-// WORKAROUND: concrete-function-typed insert overload instead of an inline cast.
-// WHY: Swift 6.3.1 SILGen crashes (signal 5, `createInputFunctionArgument` /
-// WHY: `LoweredParamGenerator::claimNext`) when a typed-throws `@Sendable` closure
-// WHY: literal is passed — via an inline `as @Sendable (In) throws(E) -> Out` cast —
-// WHY: into `Store.insert<V: Sendable>(_:)`. This overload's concrete function-typed
-// WHY: parameter absorbs the closure at the call site (no `as` needed), and the nested
-// WHY: generic `dispatchToBase` routes the stored value through the primary `<V: Sendable>`
-// WHY: method — generic parameter `V` is opaque inside `dispatchToBase`, so the outer
-// WHY: typed-throws overload cannot match and recursion is impossible.
-// WHEN TO REMOVE: once the inline-cast form is accepted by SILGen.
-// TRACKING: minimal reproducer at
-// TRACKING: `swift-institute/Experiments/silgen-sendable-typed-throws-closure-cast/`.
 extension Machine.Capture.Store where Mode == Machine.Capture.Mode.Reference {
     fileprivate mutating func insert<In: Sendable, Out: Sendable, E: Swift.Error>(
         _ fn: @Sendable @escaping (In) throws(E) -> Out
@@ -22,20 +10,6 @@ extension Machine.Capture.Store where Mode == Machine.Capture.Mode.Reference {
         return dispatchToBase(fn)
     }
 
-    // WORKAROUND for a Swift 6.4 release-mode `GenericSpecializer` crash
-    // (`TypeSubstCloner` assertion in `ApplySiteCloningHelper`) on
-    // `store.insert({ ... } as @Sendable (T) -> U)` — the non-throwing sibling
-    // of the SILGen crash above, hit only under `-O` / release builds.
-    // Same shape, same fix: a concrete function-typed overload absorbs the
-    // closure at the call site so the outer generic `insert<Value: Sendable>`
-    // is never specialized directly against an inline-cast closure type.
-    // Tracked at `swift-institute/Issues#104`; reduced repro at
-    // `swift-institute/Experiments/generic-specializer-sendable-closure-cast-release/`
-    // (a distinct compiler bug from the SILGen crash above, not the same
-    // record — no typed throws or `-Onone` required, crashes in
-    // `GenericSpecializer` rather than SILGen).
-    // WHEN TO REMOVE: once release-mode specialization of this shape no
-    // longer crashes the frontend.
     fileprivate mutating func insert<In: Sendable, Out: Sendable>(
         _ fn: @Sendable @escaping (In) -> Out
     ) -> Machine.Capture.ID<@Sendable (In) -> Out> {

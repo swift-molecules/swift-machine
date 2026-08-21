@@ -1,8 +1,5 @@
 extension Machine.Capture.Store where Mode == Machine.Capture.Mode.Reference {
-    /// Inserts a Sendable value and returns a typed capture ID.
-    ///
-    /// The Sendable constraint ensures all values in Reference mode are safe
-    /// to share across isolation domains.
+
     @inlinable
     public mutating func insert<Value: Sendable>(_ value: Value) -> Machine.Capture.ID<Value> {
         let raw = Machine.Capture.RawID(slots.count)
@@ -10,7 +7,6 @@ extension Machine.Capture.Store where Mode == Machine.Capture.Mode.Reference {
         return Machine.Capture.ID<Value>(raw)
     }
 
-    /// Accesses a captured value by its typed ID.
     @inlinable
     public func with<Value: Sendable, R>(
         _ id: Machine.Capture.ID<Value>,
@@ -21,7 +17,6 @@ extension Machine.Capture.Store where Mode == Machine.Capture.Mode.Reference {
         return body(value)
     }
 
-    /// Accesses a captured value by raw ID with explicit type.
     @usableFromInline
     func withRaw<Value: Sendable, R>(
         _ raw: Machine.Capture.RawID,
@@ -33,7 +28,6 @@ extension Machine.Capture.Store where Mode == Machine.Capture.Mode.Reference {
         return body(value)
     }
 
-    /// Accesses a captured value by raw ID with typed throws.
     @usableFromInline
     func withRawThrowing<Value: Sendable, R, E: Swift.Error>(
         _ raw: Machine.Capture.RawID,

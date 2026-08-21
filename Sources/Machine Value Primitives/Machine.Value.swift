@@ -1,31 +1,5 @@
 extension Machine {
-    // SAFETY: Encapsulates unsafe internals behind a safe API; see
-    // SAFETY: [MEM-SAFE-024] for the absorber-pattern taxonomy.
-    /// A type-erased value container for the machine's runtime.
-    ///
-    /// `Value` stores any type-erased value during machine execution, preserving
-    /// the original type information via `ObjectIdentifier` for safe extraction.
-    /// Supports both `Copyable` and `~Copyable` payloads.
-    ///
-    /// ## No Existentials
-    ///
-    /// This type uses table-based storage to avoid existential types (`AnyObject`,
-    /// `Any`, `as?` casts). The internal `_Storage` class holds an opaque pointer
-    /// and a `_Table` with type-specialized operations. Access is via `_read`
-    /// subscript (borrow) or `~Escapable` `Ref` (lifetime-dependent borrow).
-    ///
-    /// ## Sendable
-    ///
-    /// `Value<Mode>` is Sendable when `Mode: Sendable`. For `Mode.Reference`,
-    /// values can only be constructed from Sendable payloads via `make<T: Sendable>`,
-    /// ensuring the Sendable conformance is structurally sound without `@unchecked`
-    /// on `Value` itself.
-    ///
-    /// ## Construction
-    ///
-    /// The only public construction paths are:
-    /// - `Value<Mode.Reference>.make<T: Sendable & ~Copyable>(_:)` - requires Sendable payload
-    /// - `Value<Mode.Unchecked>.make<T: ~Copyable>(_:)` - no Sendable requirement
+
     @safe
     public struct Value<Mode> {
         @usableFromInline
@@ -42,32 +16,16 @@ extension Machine {
     }
 }
 
-// MARK: - Payload Projection
-
 extension Machine.Value {
-    /// Single choke-point for payload projection.
-    ///
-    /// All `assumingMemoryBound` calls go through here, making the
-    /// unsafe binding structurally tied to the stored type id.
-    ///
-    /// - Precondition: `T` must match the type used at construction.
+
     @usableFromInline
     func _project<T: ~Copyable>(_: T.Type) -> UnsafePointer<T> {
         unsafe UnsafePointer(storage.payload.assumingMemoryBound(to: T.self))
     }
 }
 
-// MARK: - Borrow Access
-
 extension Machine.Value {
-    /// Borrow access to the stored value via `_read`.
-    ///
-    /// Yields a borrow of the payload scoped to the accessor call.
-    /// Supports `~Copyable` payloads — no copy is made.
-    ///
-    ///     V._render(value[as: V.self], context: &ctx)
-    ///
-    /// - Precondition: `T` must match the type used at construction.
+
     @inlinable
     public subscript<T: ~Copyable>(as type: T.Type) -> T {
         _read {
@@ -80,18 +38,8 @@ extension Machine.Value {
     }
 }
 
-// MARK: - ~Escapable Ref
-
 extension Machine.Value {
-    /// Returns a `~Escapable` reference to the stored value.
-    ///
-    /// The returned `Ref` carries a lifetime dependency on `self`.
-    /// No closure needed — use `ref.value` to borrow.
-    ///
-    /// Uses `_overrideLifetime` (the "returning model") to bridge
-    /// from the raw pointer to the lifetime system.
-    ///
-    /// - Precondition: `T` must match the type used at construction.
+
     @_lifetime(borrow self)
     public func borrow<T: ~Copyable>(as type: T.Type) -> Ref<T> {
         precondition(
@@ -103,34 +51,18 @@ extension Machine.Value {
     }
 }
 
-// MARK: - Reference Mode Value Operations
-
-// swift-format-ignore
-// AmbiguousTrailingClosureOverload false-positive: the two `apply` overloads
-// below are the standard throwing/non-throwing pair (the stdlib `map` shape) —
-// overload resolution picks by the closure's throwing-ness, and `rethrows`-style
-// unification is unavailable because the throwing overload's typed `throws(E)`
-// must propagate to the return-effect signature.
 extension Machine.Value where Mode == Machine.Capture.Mode.Reference {
-    /// Applies a typed function to this erased value, producing a new erased value.
-    ///
-    /// - Precondition: `self` was created from a value of type `In`.
+
     public func apply<In, Out: Sendable>(_ transform: (In) -> Out) -> Machine.Value<Mode> {
         .make(transform(self[as: In.self]))
     }
 
-    /// Applies a typed throwing function to this erased value.
-    ///
-    /// - Precondition: `self` was created from a value of type `In`.
     public func apply<In, Out: Sendable, E: Swift.Error>(
         _ transform: (In) throws(E) -> Out
     ) throws(E) -> Machine.Value<Mode> {
         .make(try transform(self[as: In.self]))
     }
 
-    /// Combines this value with another using a typed binary function.
-    ///
-    /// - Precondition: `self` was created from type `A`, `other` from type `B`.
     public func combine<A, B, Out: Sendable>(
         _ other: Machine.Value<Mode>,
         using combineFn: (A, B) -> Out
@@ -139,31 +71,18 @@ extension Machine.Value where Mode == Machine.Capture.Mode.Reference {
     }
 }
 
-// MARK: - Unchecked Mode Value Operations
-
-// swift-format-ignore
-// AmbiguousTrailingClosureOverload false-positive: the standard
-// throwing/non-throwing `apply` overload pair (see the Reference-mode note above).
 extension Machine.Value where Mode == Machine.Capture.Mode.Unchecked {
-    /// Applies a typed function to this erased value, producing a new erased value.
-    ///
-    /// - Precondition: `self` was created from a value of type `In`.
+
     public func apply<In, Out>(_ transform: (In) -> Out) -> Machine.Value<Mode> {
         .make(transform(self[as: In.self]))
     }
 
-    /// Applies a typed throwing function to this erased value.
-    ///
-    /// - Precondition: `self` was created from a value of type `In`.
     public func apply<In, Out, E: Swift.Error>(
         _ transform: (In) throws(E) -> Out
     ) throws(E) -> Machine.Value<Mode> {
         .make(try transform(self[as: In.self]))
     }
 
-    /// Combines this value with another using a typed binary function.
-    ///
-    /// - Precondition: `self` was created from type `A`, `other` from type `B`.
     public func combine<A, B, Out>(
         _ other: Machine.Value<Mode>,
         using combineFn: (A, B) -> Out
@@ -172,14 +91,8 @@ extension Machine.Value where Mode == Machine.Capture.Mode.Unchecked {
     }
 }
 
-// MARK: - Reference Mode Construction
-
 extension Machine.Value where Mode == Machine.Capture.Mode.Reference {
-    /// Creates a type-erased value from a concrete Sendable value.
-    ///
-    /// This is the only construction path for `Value<Mode.Reference>`.
-    /// The Sendable constraint ensures all values in Reference mode are safe
-    /// to share across isolation domains.
+
     @inlinable
     public static func make<T: Sendable & ~Copyable>(_ value: consuming T) -> Machine.Value<Mode> {
         let payload = UnsafeMutablePointer<T>.allocate(capacity: 1)
@@ -198,13 +111,8 @@ extension Machine.Value where Mode == Machine.Capture.Mode.Reference {
     }
 }
 
-// MARK: - Unchecked Mode Construction
-
 extension Machine.Value where Mode == Machine.Capture.Mode.Unchecked {
-    /// Creates a type-erased value from a concrete value.
-    ///
-    /// This is the only construction path for `Value<Mode.Unchecked>`.
-    /// No Sendable constraint—use this mode when Sendable is not required.
+
     @inlinable
     public static func make<T: ~Copyable>(_ value: consuming T) -> Machine.Value<Mode> {
         let payload = UnsafeMutablePointer<T>.allocate(capacity: 1)
@@ -222,7 +130,5 @@ extension Machine.Value where Mode == Machine.Capture.Mode.Unchecked {
         )
     }
 }
-
-// MARK: - Sendable Conformance
 
 extension Machine.Value: Sendable where Mode: Sendable {}

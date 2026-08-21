@@ -12,7 +12,7 @@ let package = Package(
         .visionOS(.v27),
     ],
     products: [
-        // MARK: - Namespace
+
         .library(
             name: "Machine Primitive",
             targets: ["Machine Primitive"]
@@ -73,13 +73,11 @@ let package = Package(
         )
     ],
     targets: [
-        // MARK: - Namespace
+
         .target(
             name: "Machine Primitive",
             dependencies: []
         ),
-
-        // MARK: - Value & Capture
 
         .target(
             name: "Machine Value Primitives",
@@ -93,8 +91,6 @@ let package = Package(
                 .target(name: "Machine Primitive")
             ]
         ),
-
-        // MARK: - Carriers
 
         .target(
             name: "Machine Transform Primitives",
@@ -125,8 +121,6 @@ let package = Package(
             ]
         ),
 
-        // MARK: - Composition
-
         .target(
             name: "Machine Frame Primitives",
             dependencies: [
@@ -145,8 +139,7 @@ let package = Package(
                 .target(name: "Machine Combine Primitives"),
                 .target(name: "Machine Next Primitives"),
                 .target(name: "Machine Finalize Primitives"),
-                // Node.ID = Graph.Node, Adjacency.Extract — declared directly per [MOD-038]
-                // (previously reached transitively via the dissolved Core funnel).
+
                 .product(name: "Graph Sequential Primitives", package: "swift-graph-primitives"),
             ]
         ),
@@ -155,13 +148,10 @@ let package = Package(
             dependencies: [
                 .target(name: "Machine Node Primitives"),
                 .target(name: "Machine Capture Primitives"),
-                // Program/Builder use Graph.Sequential storage directly per [MOD-038]
-                // (previously reached transitively via the dissolved Core funnel).
+
                 .product(name: "Graph Sequential Primitives", package: "swift-graph-primitives"),
             ]
         ),
-
-        // MARK: - Convenience
 
         .target(
             name: "Machine Convenience Primitives",
@@ -169,8 +159,6 @@ let package = Package(
                 .target(name: "Machine Program Primitives")
             ]
         ),
-
-        // MARK: - Umbrella
 
         .target(
             name: "Machine Primitives",
@@ -186,15 +174,10 @@ let package = Package(
                 .target(name: "Machine Node Primitives"),
                 .target(name: "Machine Program Primitives"),
                 .target(name: "Machine Convenience Primitives"),
-                // Narrowed to Graph Primitives: the Machine umbrella only ever
-                // surfaces Graph.Node/Adjacency/Sequential/Analyze (all in Core).
-                // Depending on the full Graph umbrella over-broadly re-exported the
-                // graph algorithms + their data-structure cohort ([MOD-006]/[MOD-015]).
+
                 .product(name: "Graph Sequential Primitives", package: "swift-graph-primitives"),
             ]
         ),
-
-        // MARK: - Tests
 
         .testTarget(
             name: "Machine Value Primitives Tests",
@@ -229,7 +212,6 @@ let package = Package(
             dependencies: [.target(name: "Machine Primitives")]
         ),
 
-        // MARK: - Test Support
         .target(
             name: "Machine Primitives Test Support",
             dependencies: [

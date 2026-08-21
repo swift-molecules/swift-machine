@@ -1,13 +1,7 @@
 public import Machine_Program_Primitives
 
-// MARK: - Program Apply Conveniences
-
 extension Machine.Program {
-    // MARK: Transform.Erased
 
-    /// Applies a transform using this program's frozen captures.
-    ///
-    /// Convenience for `transform.apply(using: captures, value)`.
     @inlinable
     public func apply(
         _ transform: Machine.Transform.Erased<Mode>,
@@ -16,11 +10,6 @@ extension Machine.Program {
         transform.apply(using: captures, value)
     }
 
-    // MARK: Transform.Throwing
-
-    /// Applies a throwing transform using this program's frozen captures.
-    ///
-    /// Convenience for `transform.apply(using: captures, value)`.
     @inlinable
     public func apply(
         _ transform: Machine.Transform.Throwing<Mode, Failure>,
@@ -29,11 +18,6 @@ extension Machine.Program {
         try transform.apply(using: captures, value)
     }
 
-    // MARK: Combine.Erased
-
-    /// Combines two values using this program's frozen captures.
-    ///
-    /// Convenience for `combine.combine(using: captures, a, b)`.
     @inlinable
     public func combine(
         _ combine: Machine.Combine.Erased<Mode>,
@@ -43,11 +27,6 @@ extension Machine.Program {
         combine.combine(using: captures, a, b)
     }
 
-    // MARK: Next.Erased
-
-    /// Selects the next node using this program's frozen captures.
-    ///
-    /// Convenience for `next.next(using: captures, value)`.
     @inlinable
     public func next(
         _ next: Machine.Next.Erased<Mode, Machine.Node<Leaf, Failure, Mode>.ID>,
@@ -56,11 +35,6 @@ extension Machine.Program {
         next.next(using: captures, value)
     }
 
-    // MARK: Finalize.Array
-
-    /// Finalizes an array of values using this program's frozen captures.
-    ///
-    /// Convenience for `finalize.finalize(using: captures, values)`.
     @inlinable
     public func finalize(
         _ finalize: Machine.Finalize.Array<Mode>,

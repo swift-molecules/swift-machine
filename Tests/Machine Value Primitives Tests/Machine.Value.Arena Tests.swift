@@ -43,13 +43,10 @@ struct `Machine.Value.Arena Tests` {
     func `allocate auto-expands capacity`() {
         var arena = Arena(capacity: 2)
 
-        // Allocate more than initial capacity
         (0..<10).forEach { i in
             _ = arena.allocate(Value.make(i))
         }
 
-        // Should not crash and all values should be accessible
-        // (We can't directly verify internal capacity, but no crash means success)
     }
 
     @Test
@@ -102,7 +99,6 @@ struct `Machine.Value.Arena Tests` {
 
         arena.reset()
 
-        // After reset, allocating should reuse slots from beginning
         let handle = arena.allocate(Value.make(100))
         let value = arena.read(handle)
         #expect(value[as: Int.self] == 100)
@@ -141,10 +137,8 @@ struct `Machine.Value.Arena Tests` {
 
         _ = arena.release(h1)
 
-        // h2 should still be valid
         #expect(arena.read(h2)[as: String.self] == "b")
 
-        // New allocation should still work
         let h3 = arena.allocate(Value.make("c"))
         #expect(arena.read(h3)[as: String.self] == "c")
     }

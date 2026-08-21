@@ -1,5 +1,5 @@
 extension Machine.Capture.Frozen where Mode == Machine.Capture.Mode.Unchecked {
-    /// Accesses a captured value by its typed ID.
+
     @inlinable
     public func with<Value, R>(
         _ id: Machine.Capture.ID<Value>,
@@ -10,7 +10,6 @@ extension Machine.Capture.Frozen where Mode == Machine.Capture.Mode.Unchecked {
         return body(value)
     }
 
-    /// Accesses a captured value by raw ID with explicit type.
     public func withRaw<Value, R>(
         _ raw: Machine.Capture.RawID,
         as _: Value.Type,
@@ -21,7 +20,6 @@ extension Machine.Capture.Frozen where Mode == Machine.Capture.Mode.Unchecked {
         return body(value)
     }
 
-    /// Accesses a captured value by raw ID with typed throws.
     public func withRawThrowing<Value, R, E: Swift.Error>(
         _ raw: Machine.Capture.RawID,
         as _: Value.Type,
@@ -32,8 +30,3 @@ extension Machine.Capture.Frozen where Mode == Machine.Capture.Mode.Unchecked {
         return try body(value)
     }
 }
-// No Sendable conformance for Frozen<Unchecked>: Mode.Unchecked is itself
-// non-Sendable per [MEM-SEND-013] Pattern B (terminal direction). Consumers
-// transport assembled `Program`/`Parser` values across isolation domains via
-// `sending` at the program-transport boundary, not via a structural Sendable
-// conformance on Frozen<Unchecked>.

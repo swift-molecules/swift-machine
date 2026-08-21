@@ -1,11 +1,8 @@
 extension Machine.Transform {
-    // SAFETY: Safe by construction — backing storage uses only stdlib
-    // SAFETY: safe types; `@safe` documents that this type performs no
-    // SAFETY: unsafe operations.
-    /// A type-erased non-throwing transformation from one value to another.
+
     @safe
     public struct Erased<Mode>: Sendable {
-        /// The capture slot holding the underlying typed transform.
+
         public let capture: Machine.Capture.RawID
 
         @usableFromInline
@@ -18,7 +15,7 @@ extension Machine.Transform {
 }
 
 extension Machine.Transform.Erased {
-    /// Applies the transform to the given value using the frozen captures.
+
     @inlinable
     public func apply(
         using captures: borrowing Machine.Capture.Frozen<Mode>,
@@ -29,7 +26,7 @@ extension Machine.Transform.Erased {
 }
 
 extension Machine.Transform.Erased where Mode == Machine.Capture.Mode.Reference {
-    /// Creates an erased transform from a captured `@Sendable` typed function (Reference mode).
+
     @inlinable
     public init<In, Out: Sendable>(
         capture: Machine.Capture.ID<@Sendable (In) -> Out>
@@ -45,7 +42,7 @@ extension Machine.Transform.Erased where Mode == Machine.Capture.Mode.Reference 
 }
 
 extension Machine.Transform.Erased where Mode == Machine.Capture.Mode.Unchecked {
-    /// Creates an erased transform from a captured typed function (Unchecked mode).
+
     @inlinable
     public init<In, Out>(
         capture: Machine.Capture.ID<(In) -> Out>
