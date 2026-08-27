@@ -12,58 +12,17 @@ let package = Package(
         .visionOS(.v27),
     ],
     products: [
-
-        .library(
-            name: "Machine Primitive",
-            targets: ["Machine Primitive"]
-        ),
         .library(
             name: "Machine",
             targets: ["Machine"]
         ),
         .library(
-            name: "Machine Value",
-            targets: ["Machine Value"]
+            name: "Machine Standard Library Integration",
+            targets: ["Machine Standard Library Integration"]
         ),
         .library(
-            name: "Machine Capture",
-            targets: ["Machine Capture"]
-        ),
-        .library(
-            name: "Machine Transform",
-            targets: ["Machine Transform"]
-        ),
-        .library(
-            name: "Machine Combine",
-            targets: ["Machine Combine"]
-        ),
-        .library(
-            name: "Machine Next",
-            targets: ["Machine Next"]
-        ),
-        .library(
-            name: "Machine Finalize",
-            targets: ["Machine Finalize"]
-        ),
-        .library(
-            name: "Machine Frame",
-            targets: ["Machine Frame"]
-        ),
-        .library(
-            name: "Machine Node",
-            targets: ["Machine Node"]
-        ),
-        .library(
-            name: "Machine Program",
-            targets: ["Machine Program"]
-        ),
-        .library(
-            name: "Machine Convenience",
-            targets: ["Machine Convenience"]
-        ),
-        .library(
-            name: "Machine Test Support",
-            targets: ["Machine Test Support"]
+            name: "Machine Apple Foundation Integration",
+            targets: ["Machine Apple Foundation Integration"]
         ),
     ],
     dependencies: [
@@ -73,152 +32,26 @@ let package = Package(
         )
     ],
     targets: [
-
-        .target(
-            name: "Machine Primitive",
-            dependencies: []
-        ),
-
-        .target(
-            name: "Machine Value",
-            dependencies: [
-                .target(name: "Machine Primitive")
-            ]
-        ),
-        .target(
-            name: "Machine Capture",
-            dependencies: [
-                .target(name: "Machine Primitive")
-            ]
-        ),
-
-        .target(
-            name: "Machine Transform",
-            dependencies: [
-                .target(name: "Machine Value"),
-                .target(name: "Machine Capture"),
-            ]
-        ),
-        .target(
-            name: "Machine Combine",
-            dependencies: [
-                .target(name: "Machine Value"),
-                .target(name: "Machine Capture"),
-            ]
-        ),
-        .target(
-            name: "Machine Next",
-            dependencies: [
-                .target(name: "Machine Value"),
-                .target(name: "Machine Capture"),
-            ]
-        ),
-        .target(
-            name: "Machine Finalize",
-            dependencies: [
-                .target(name: "Machine Value"),
-                .target(name: "Machine Capture"),
-            ]
-        ),
-
-        .target(
-            name: "Machine Frame",
-            dependencies: [
-                .target(name: "Machine Value"),
-                .target(name: "Machine Transform"),
-                .target(name: "Machine Combine"),
-                .target(name: "Machine Next"),
-                .target(name: "Machine Finalize"),
-            ]
-        ),
-        .target(
-            name: "Machine Node",
-            dependencies: [
-                .target(name: "Machine Value"),
-                .target(name: "Machine Transform"),
-                .target(name: "Machine Combine"),
-                .target(name: "Machine Next"),
-                .target(name: "Machine Finalize"),
-
-                .product(name: "Graph Sequential", package: "swift-graph"),
-            ]
-        ),
-        .target(
-            name: "Machine Program",
-            dependencies: [
-                .target(name: "Machine Node"),
-                .target(name: "Machine Capture"),
-
-                .product(name: "Graph Sequential", package: "swift-graph"),
-            ]
-        ),
-
-        .target(
-            name: "Machine Convenience",
-            dependencies: [
-                .target(name: "Machine Program")
-            ]
-        ),
-
         .target(
             name: "Machine",
             dependencies: [
-                .target(name: "Machine Primitive"),
-                .target(name: "Machine Value"),
-                .target(name: "Machine Capture"),
-                .target(name: "Machine Transform"),
-                .target(name: "Machine Combine"),
-                .target(name: "Machine Next"),
-                .target(name: "Machine Finalize"),
-                .target(name: "Machine Frame"),
-                .target(name: "Machine Node"),
-                .target(name: "Machine Program"),
-                .target(name: "Machine Convenience"),
-
-                .product(name: "Graph Sequential", package: "swift-graph"),
+                .product(name: "Graph Sequential", package: "swift-graph")
             ]
         ),
-
-        .testTarget(
-            name: "Machine Value Tests",
-            dependencies: [.target(name: "Machine")]
-        ),
-        .testTarget(
-            name: "Machine Combine Tests",
-            dependencies: [.target(name: "Machine")]
-        ),
-        .testTarget(
-            name: "Machine Transform Tests",
-            dependencies: [.target(name: "Machine")]
-        ),
-        .testTarget(
-            name: "Machine Next Tests",
-            dependencies: [.target(name: "Machine")]
-        ),
-        .testTarget(
-            name: "Machine Finalize Tests",
-            dependencies: [.target(name: "Machine")]
-        ),
-        .testTarget(
-            name: "Machine Frame Tests",
-            dependencies: [.target(name: "Machine")]
-        ),
-        .testTarget(
-            name: "Machine Node Tests",
-            dependencies: [.target(name: "Machine")]
-        ),
-        .testTarget(
-            name: "Machine Program Tests",
-            dependencies: [.target(name: "Machine")]
-        ),
-
         .target(
-            name: "Machine Test Support",
+            name: "Machine Standard Library Integration",
+            dependencies: ["Machine"]
+        ),
+        .target(
+            name: "Machine Apple Foundation Integration",
             dependencies: [
-                .target(name: "Machine"),
-                .product(name: "Graph Test Support", package: "swift-graph"),
-            ],
-            path: "Tests/Support"
+                "Machine",
+                "Machine Standard Library Integration",
+            ]
+        ),
+        .testTarget(
+            name: "Machine Tests",
+            dependencies: ["Machine"]
         ),
     ],
     swiftLanguageModes: [.v6]

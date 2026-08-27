@@ -1,4 +1,3 @@
-public import Machine_Program
 
 extension Machine.Program {
 
