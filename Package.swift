@@ -3,7 +3,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "swift-machine-primitives",
+    name: "swift-machine",
     platforms: [
         .macOS(.v27),
         .iOS(.v27),
@@ -18,57 +18,57 @@ let package = Package(
             targets: ["Machine Primitive"]
         ),
         .library(
-            name: "Machine Primitives",
-            targets: ["Machine Primitives"]
+            name: "Machine",
+            targets: ["Machine"]
         ),
         .library(
-            name: "Machine Value Primitives",
-            targets: ["Machine Value Primitives"]
+            name: "Machine Value",
+            targets: ["Machine Value"]
         ),
         .library(
-            name: "Machine Capture Primitives",
-            targets: ["Machine Capture Primitives"]
+            name: "Machine Capture",
+            targets: ["Machine Capture"]
         ),
         .library(
-            name: "Machine Transform Primitives",
-            targets: ["Machine Transform Primitives"]
+            name: "Machine Transform",
+            targets: ["Machine Transform"]
         ),
         .library(
-            name: "Machine Combine Primitives",
-            targets: ["Machine Combine Primitives"]
+            name: "Machine Combine",
+            targets: ["Machine Combine"]
         ),
         .library(
-            name: "Machine Next Primitives",
-            targets: ["Machine Next Primitives"]
+            name: "Machine Next",
+            targets: ["Machine Next"]
         ),
         .library(
-            name: "Machine Finalize Primitives",
-            targets: ["Machine Finalize Primitives"]
+            name: "Machine Finalize",
+            targets: ["Machine Finalize"]
         ),
         .library(
-            name: "Machine Frame Primitives",
-            targets: ["Machine Frame Primitives"]
+            name: "Machine Frame",
+            targets: ["Machine Frame"]
         ),
         .library(
-            name: "Machine Node Primitives",
-            targets: ["Machine Node Primitives"]
+            name: "Machine Node",
+            targets: ["Machine Node"]
         ),
         .library(
-            name: "Machine Program Primitives",
-            targets: ["Machine Program Primitives"]
+            name: "Machine Program",
+            targets: ["Machine Program"]
         ),
         .library(
-            name: "Machine Convenience Primitives",
-            targets: ["Machine Convenience Primitives"]
+            name: "Machine Convenience",
+            targets: ["Machine Convenience"]
         ),
         .library(
-            name: "Machine Primitives Test Support",
-            targets: ["Machine Primitives Test Support"]
+            name: "Machine Test Support",
+            targets: ["Machine Test Support"]
         ),
     ],
     dependencies: [
         .package(
-            url: "https://github.com/swift-primitives/swift-graph-primitives.git",
+            url: "https://github.com/swift-molecules/swift-graph.git",
             branch: "main"
         )
     ],
@@ -80,143 +80,143 @@ let package = Package(
         ),
 
         .target(
-            name: "Machine Value Primitives",
+            name: "Machine Value",
             dependencies: [
                 .target(name: "Machine Primitive")
             ]
         ),
         .target(
-            name: "Machine Capture Primitives",
+            name: "Machine Capture",
             dependencies: [
                 .target(name: "Machine Primitive")
             ]
         ),
 
         .target(
-            name: "Machine Transform Primitives",
+            name: "Machine Transform",
             dependencies: [
-                .target(name: "Machine Value Primitives"),
-                .target(name: "Machine Capture Primitives"),
+                .target(name: "Machine Value"),
+                .target(name: "Machine Capture"),
             ]
         ),
         .target(
-            name: "Machine Combine Primitives",
+            name: "Machine Combine",
             dependencies: [
-                .target(name: "Machine Value Primitives"),
-                .target(name: "Machine Capture Primitives"),
+                .target(name: "Machine Value"),
+                .target(name: "Machine Capture"),
             ]
         ),
         .target(
-            name: "Machine Next Primitives",
+            name: "Machine Next",
             dependencies: [
-                .target(name: "Machine Value Primitives"),
-                .target(name: "Machine Capture Primitives"),
+                .target(name: "Machine Value"),
+                .target(name: "Machine Capture"),
             ]
         ),
         .target(
-            name: "Machine Finalize Primitives",
+            name: "Machine Finalize",
             dependencies: [
-                .target(name: "Machine Value Primitives"),
-                .target(name: "Machine Capture Primitives"),
-            ]
-        ),
-
-        .target(
-            name: "Machine Frame Primitives",
-            dependencies: [
-                .target(name: "Machine Value Primitives"),
-                .target(name: "Machine Transform Primitives"),
-                .target(name: "Machine Combine Primitives"),
-                .target(name: "Machine Next Primitives"),
-                .target(name: "Machine Finalize Primitives"),
-            ]
-        ),
-        .target(
-            name: "Machine Node Primitives",
-            dependencies: [
-                .target(name: "Machine Value Primitives"),
-                .target(name: "Machine Transform Primitives"),
-                .target(name: "Machine Combine Primitives"),
-                .target(name: "Machine Next Primitives"),
-                .target(name: "Machine Finalize Primitives"),
-
-                .product(name: "Graph Sequential Primitives", package: "swift-graph-primitives"),
-            ]
-        ),
-        .target(
-            name: "Machine Program Primitives",
-            dependencies: [
-                .target(name: "Machine Node Primitives"),
-                .target(name: "Machine Capture Primitives"),
-
-                .product(name: "Graph Sequential Primitives", package: "swift-graph-primitives"),
+                .target(name: "Machine Value"),
+                .target(name: "Machine Capture"),
             ]
         ),
 
         .target(
-            name: "Machine Convenience Primitives",
+            name: "Machine Frame",
             dependencies: [
-                .target(name: "Machine Program Primitives")
+                .target(name: "Machine Value"),
+                .target(name: "Machine Transform"),
+                .target(name: "Machine Combine"),
+                .target(name: "Machine Next"),
+                .target(name: "Machine Finalize"),
+            ]
+        ),
+        .target(
+            name: "Machine Node",
+            dependencies: [
+                .target(name: "Machine Value"),
+                .target(name: "Machine Transform"),
+                .target(name: "Machine Combine"),
+                .target(name: "Machine Next"),
+                .target(name: "Machine Finalize"),
+
+                .product(name: "Graph Sequential", package: "swift-graph"),
+            ]
+        ),
+        .target(
+            name: "Machine Program",
+            dependencies: [
+                .target(name: "Machine Node"),
+                .target(name: "Machine Capture"),
+
+                .product(name: "Graph Sequential", package: "swift-graph"),
             ]
         ),
 
         .target(
-            name: "Machine Primitives",
+            name: "Machine Convenience",
+            dependencies: [
+                .target(name: "Machine Program")
+            ]
+        ),
+
+        .target(
+            name: "Machine",
             dependencies: [
                 .target(name: "Machine Primitive"),
-                .target(name: "Machine Value Primitives"),
-                .target(name: "Machine Capture Primitives"),
-                .target(name: "Machine Transform Primitives"),
-                .target(name: "Machine Combine Primitives"),
-                .target(name: "Machine Next Primitives"),
-                .target(name: "Machine Finalize Primitives"),
-                .target(name: "Machine Frame Primitives"),
-                .target(name: "Machine Node Primitives"),
-                .target(name: "Machine Program Primitives"),
-                .target(name: "Machine Convenience Primitives"),
+                .target(name: "Machine Value"),
+                .target(name: "Machine Capture"),
+                .target(name: "Machine Transform"),
+                .target(name: "Machine Combine"),
+                .target(name: "Machine Next"),
+                .target(name: "Machine Finalize"),
+                .target(name: "Machine Frame"),
+                .target(name: "Machine Node"),
+                .target(name: "Machine Program"),
+                .target(name: "Machine Convenience"),
 
-                .product(name: "Graph Sequential Primitives", package: "swift-graph-primitives"),
+                .product(name: "Graph Sequential", package: "swift-graph"),
             ]
         ),
 
         .testTarget(
-            name: "Machine Value Primitives Tests",
-            dependencies: [.target(name: "Machine Primitives")]
+            name: "Machine Value Tests",
+            dependencies: [.target(name: "Machine")]
         ),
         .testTarget(
-            name: "Machine Combine Primitives Tests",
-            dependencies: [.target(name: "Machine Primitives")]
+            name: "Machine Combine Tests",
+            dependencies: [.target(name: "Machine")]
         ),
         .testTarget(
-            name: "Machine Transform Primitives Tests",
-            dependencies: [.target(name: "Machine Primitives")]
+            name: "Machine Transform Tests",
+            dependencies: [.target(name: "Machine")]
         ),
         .testTarget(
-            name: "Machine Next Primitives Tests",
-            dependencies: [.target(name: "Machine Primitives")]
+            name: "Machine Next Tests",
+            dependencies: [.target(name: "Machine")]
         ),
         .testTarget(
-            name: "Machine Finalize Primitives Tests",
-            dependencies: [.target(name: "Machine Primitives")]
+            name: "Machine Finalize Tests",
+            dependencies: [.target(name: "Machine")]
         ),
         .testTarget(
-            name: "Machine Frame Primitives Tests",
-            dependencies: [.target(name: "Machine Primitives")]
+            name: "Machine Frame Tests",
+            dependencies: [.target(name: "Machine")]
         ),
         .testTarget(
-            name: "Machine Node Primitives Tests",
-            dependencies: [.target(name: "Machine Primitives")]
+            name: "Machine Node Tests",
+            dependencies: [.target(name: "Machine")]
         ),
         .testTarget(
-            name: "Machine Program Primitives Tests",
-            dependencies: [.target(name: "Machine Primitives")]
+            name: "Machine Program Tests",
+            dependencies: [.target(name: "Machine")]
         ),
 
         .target(
-            name: "Machine Primitives Test Support",
+            name: "Machine Test Support",
             dependencies: [
-                .target(name: "Machine Primitives"),
-                .product(name: "Graph Primitives Test Support", package: "swift-graph-primitives"),
+                .target(name: "Machine"),
+                .product(name: "Graph Test Support", package: "swift-graph"),
             ],
             path: "Tests/Support"
         ),
