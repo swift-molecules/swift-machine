@@ -35,7 +35,7 @@ let package = Package(
         .target(
             name: "Machine",
             dependencies: [
-                .product(name: "Graph Sequential", package: "swift-graph")
+                .product(name: "Graph", package: "swift-graph")
             ]
         ),
         .target(
