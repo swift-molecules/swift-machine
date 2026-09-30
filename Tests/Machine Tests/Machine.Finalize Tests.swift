@@ -1,3 +1,4 @@
+import Graph
 import Testing
 
 @testable import Machine

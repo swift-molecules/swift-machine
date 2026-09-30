@@ -55,7 +55,8 @@ let package = Package(
         ),
         .testTarget(
             name: "Machine Tests",
-            dependencies: ["Machine"]
+            dependencies: [
+                .product(name: "Graph", package: "swift-graph"),"Machine"]
         ),
     ],
     swiftLanguageModes: [.v6]
