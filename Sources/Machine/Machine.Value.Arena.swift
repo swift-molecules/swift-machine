@@ -1,3 +1,5 @@
+public import Ordinal
+public import Tagged
 extension Machine.Value {
 
     public struct Arena: ~Copyable {

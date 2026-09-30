@@ -1,3 +1,5 @@
+public import Ordinal
+public import Tagged
 public import Graph
 
 extension Machine {

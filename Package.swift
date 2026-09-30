@@ -26,6 +26,8 @@ let package = Package(
         ),
     ],
     dependencies: [
+        .package(url: "https://github.com/swift-atoms/swift-tagged.git", branch: "main"),
+        .package(url: "https://github.com/swift-atoms/swift-ordinal.git", branch: "main"),
         .package(
             url: "https://github.com/swift-molecules/swift-graph.git",
             branch: "main"
@@ -35,6 +37,8 @@ let package = Package(
         .target(
             name: "Machine",
             dependencies: [
+                .product(name: "Ordinal", package: "swift-ordinal"),
+                .product(name: "Tagged", package: "swift-tagged"),
                 .product(name: "Graph", package: "swift-graph")
             ]
         ),

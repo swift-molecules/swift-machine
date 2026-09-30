@@ -1,3 +1,5 @@
+public import Ordinal
+public import Tagged
 
 extension Machine.Builder where Mode == Machine.Capture.Mode.Reference {
 
