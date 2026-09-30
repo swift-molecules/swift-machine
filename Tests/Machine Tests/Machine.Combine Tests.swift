@@ -1,3 +1,4 @@
+import Tagged
 import Graph
 import Testing
 

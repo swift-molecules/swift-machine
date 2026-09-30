@@ -56,6 +56,7 @@ let package = Package(
         .testTarget(
             name: "Machine Tests",
             dependencies: [
+                .product(name: "Tagged", package: "swift-tagged"),
                 .product(name: "Graph", package: "swift-graph"),"Machine"]
         ),
     ],
