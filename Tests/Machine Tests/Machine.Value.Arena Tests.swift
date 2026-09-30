@@ -1,3 +1,5 @@
+import Cardinal
+import Ordinal
 import Tagged
 import Graph
 import Testing
