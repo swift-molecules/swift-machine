@@ -59,7 +59,7 @@ extension Machine.Value where Mode == Machine.Capture.Mode.Reference {
         .make(transform(self[as: In.self]))
     }
 
-    public func apply<In, Out: Sendable, E: Swift.Error>(
+    public func apply<In, Out: Sendable, E: Swift::Error>(
         _ transform: (In) throws(E) -> Out
     ) throws(E) -> Machine.Value<Mode> {
         .make(try transform(self[as: In.self]))
@@ -79,7 +79,7 @@ extension Machine.Value where Mode == Machine.Capture.Mode.Unchecked {
         .make(transform(self[as: In.self]))
     }
 
-    public func apply<In, Out, E: Swift.Error>(
+    public func apply<In, Out, E: Swift::Error>(
         _ transform: (In) throws(E) -> Out
     ) throws(E) -> Machine.Value<Mode> {
         .make(try transform(self[as: In.self]))

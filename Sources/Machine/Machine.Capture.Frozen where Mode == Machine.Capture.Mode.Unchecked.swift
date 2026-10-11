@@ -22,7 +22,7 @@ extension Machine.Capture.Frozen where Mode == Machine.Capture.Mode.Unchecked {
         return body(value)
     }
 
-    public func withRawThrowing<Value, R, E: Swift.Error>(
+    public func withRawThrowing<Value, R, E: Swift::Error>(
         _ raw: Machine.Capture.RawID,
         as _: Value.Type,
         _ body: (borrowing Value) throws(E) -> R

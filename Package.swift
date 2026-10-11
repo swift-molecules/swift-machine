@@ -45,13 +45,13 @@ let package = Package(
         ),
         .target(
             name: "Machine Standard Library Integration",
-            dependencies: ["Machine"]
+            dependencies: [.target(name: "Machine")]
         ),
         .target(
             name: "Machine Apple Foundation Integration",
             dependencies: [
-                "Machine",
-                "Machine Standard Library Integration",
+                .target(name: "Machine"),
+                .target(name: "Machine Standard Library Integration"),
             ]
         ),
         .testTarget(
@@ -60,7 +60,7 @@ let package = Package(
                 .product(name: "Cardinal", package: "swift-cardinal"),
                 .product(name: "Ordinal", package: "swift-ordinal"),
                 .product(name: "Tagged", package: "swift-tagged"),
-                .product(name: "Graph", package: "swift-graph"),"Machine"]
+                .product(name: "Graph", package: "swift-graph"),.target(name: "Machine")]
         ),
     ],
     swiftLanguageModes: [.v6]

@@ -33,7 +33,7 @@ struct `Machine.Program Tests` {
         case readInt
     }
 
-    enum TestError: Swift.Error, Sendable {
+    enum TestError: Swift::Error, Sendable {
         case failed
     }
 

@@ -5,7 +5,7 @@ public import Graph
 extension Machine {
 
     @safe
-    public enum Node<Leaf, Failure: Swift.Error, Mode> {
+    public enum Node<Leaf, Failure: Swift::Error, Mode> {
 
         case leaf(Leaf)
 

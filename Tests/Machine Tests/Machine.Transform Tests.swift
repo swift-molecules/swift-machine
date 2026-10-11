@@ -7,7 +7,7 @@ import Testing
 @testable import Machine
 
 extension Machine.Capture.Store where Mode == Machine.Capture.Mode.Reference {
-    fileprivate mutating func insert<In: Sendable, Out: Sendable, E: Swift.Error>(
+    fileprivate mutating func insert<In: Sendable, Out: Sendable, E: Swift::Error>(
         _ fn: @Sendable @escaping (In) throws(E) -> Out
     ) -> Machine.Capture.ID<@Sendable (In) throws(E) -> Out> {
         func dispatchToBase<V: Sendable>(_ v: V) -> Machine.Capture.ID<V> { self.insert(v) }
@@ -137,7 +137,7 @@ struct `Machine.Transform.Throwing Tests` {
     typealias Store = Machine.Capture.Store<Mode>
     typealias Frozen = Machine.Capture.Frozen<Mode>
 
-    enum TestError: Swift.Error, Equatable, Sendable {
+    enum TestError: Swift::Error, Equatable, Sendable {
         case negativeValue
         case overflow
     }
@@ -193,7 +193,7 @@ struct `Machine.Transform.Throwing Tests` {
 
     @Test
     func `transform with different error types`() throws {
-        enum ParseError: Swift.Error, Sendable { case invalid }
+        enum ParseError: Swift::Error, Sendable { case invalid }
         typealias ParseTransform = Machine.Transform.Throwing<Mode, ParseError>
 
         var store = Store()

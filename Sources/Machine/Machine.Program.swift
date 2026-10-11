@@ -4,7 +4,7 @@ public import Graph
 
 extension Machine {
 
-    public struct Program<Leaf, Failure: Swift.Error, Mode> {
+    public struct Program<Leaf, Failure: Swift::Error, Mode> {
 
         public let graph: Graph.Sequential<Node<Leaf, Failure, Mode>, Node<Leaf, Failure, Mode>>
 

@@ -4,7 +4,7 @@ public import Graph
 
 extension Machine {
 
-    public struct Builder<Leaf, Failure: Swift.Error, Mode>: ~Copyable {
+    public struct Builder<Leaf, Failure: Swift::Error, Mode>: ~Copyable {
         @usableFromInline
         var storage: Graph.Sequential<Node<Leaf, Failure, Mode>, Node<Leaf, Failure, Mode>>.Builder
 

@@ -3,7 +3,7 @@ public import Tagged
 extension Machine {
 
     @safe
-    public enum Frame<NodeID, Checkpoint, Mode, Failure: Swift.Error, Extra> {
+    public enum Frame<NodeID, Checkpoint, Mode, Failure: Swift::Error, Extra> {
 
         case map(transform: Transform.Erased<Mode>)
 

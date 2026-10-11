@@ -31,7 +31,7 @@ extension Machine.Capture.Store where Mode == Machine.Capture.Mode.Unchecked {
     }
 
     @usableFromInline
-    func withRawThrowing<Value, R, E: Swift.Error>(
+    func withRawThrowing<Value, R, E: Swift::Error>(
         _ raw: Machine.Capture.RawID,
         as _: Value.Type,
         _ body: (borrowing Value) throws(E) -> R

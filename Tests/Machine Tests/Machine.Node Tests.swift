@@ -7,7 +7,7 @@ import Testing
 @testable import Machine
 
 extension Machine.Capture.Store where Mode == Machine.Capture.Mode.Reference {
-    fileprivate mutating func insert<In: Sendable, Out: Sendable, E: Swift.Error>(
+    fileprivate mutating func insert<In: Sendable, Out: Sendable, E: Swift::Error>(
         _ fn: @Sendable @escaping (In) throws(E) -> Out
     ) -> Machine.Capture.ID<@Sendable (In) throws(E) -> Out> {
         func dispatchToBase<V: Sendable>(_ v: V) -> Machine.Capture.ID<V> { self.insert(v) }
@@ -35,7 +35,7 @@ struct `Machine.Node Tests` {
         case advance(Int)
     }
 
-    enum TestError: Swift.Error, Equatable, Sendable {
+    enum TestError: Swift::Error, Equatable, Sendable {
         case unexpected
         case overflow
     }

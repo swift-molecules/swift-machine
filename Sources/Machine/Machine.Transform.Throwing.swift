@@ -3,7 +3,7 @@ public import Tagged
 extension Machine.Transform {
 
     @safe
-    public struct Throwing<Mode, Failure: Swift.Error>: Sendable {
+    public struct Throwing<Mode, Failure: Swift::Error>: Sendable {
 
         public let capture: Machine.Capture.RawID
 

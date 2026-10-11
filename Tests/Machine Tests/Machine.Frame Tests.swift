@@ -7,7 +7,7 @@ import Testing
 @testable import Machine
 
 extension Machine.Capture.Store where Mode == Machine.Capture.Mode.Reference {
-    fileprivate mutating func insert<In: Sendable, Out: Sendable, E: Swift.Error>(
+    fileprivate mutating func insert<In: Sendable, Out: Sendable, E: Swift::Error>(
         _ fn: @Sendable @escaping (In) throws(E) -> Out
     ) -> Machine.Capture.ID<@Sendable (In) throws(E) -> Out> {
         func dispatchToBase<V: Sendable>(_ v: V) -> Machine.Capture.ID<V> { self.insert(v) }
@@ -37,7 +37,7 @@ struct `Machine.Frame Tests` {
     typealias Arena = Machine.Value<Mode>.Arena
     typealias NodeID = Int
     typealias Checkpoint = Int
-    enum TestError: Swift.Error, Sendable { case failed }
+    enum TestError: Swift::Error, Sendable { case failed }
     typealias TestFrame = Machine.Frame<NodeID, Checkpoint, Mode, TestError, Never>
 
     @Test
@@ -268,7 +268,7 @@ struct `Machine.Frame with Extra Tests` {
     typealias Value = Machine.Value<Mode>
     typealias NodeID = Int
     typealias Checkpoint = Int
-    enum TestError: Swift.Error, Sendable { case failed }
+    enum TestError: Swift::Error, Sendable { case failed }
 
     struct MemoEntry: Equatable, Sendable {
         var nodeId: NodeID
