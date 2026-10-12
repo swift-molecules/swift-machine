@@ -1,3 +1,3 @@
-public import Ordinal
-public import Tagged
+import Ordinal
+import Tagged
 public enum Machine {}

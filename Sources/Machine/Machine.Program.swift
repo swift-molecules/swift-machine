@@ -1,4 +1,4 @@
-public import Ordinal
+import Ordinal
 public import Tagged
 public import Graph
 

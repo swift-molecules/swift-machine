@@ -1,5 +1,5 @@
-public import Ordinal
-public import Tagged
+import Ordinal
+import Tagged
 extension Machine {
 
     @safe

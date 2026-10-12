@@ -43,21 +43,21 @@ struct `Machine.Program Tests` {
 
     @Test
     func `builder creates empty program`() {
-        var builder = TestBuilder()
+        let builder = TestBuilder()
         let program = builder.build()
         #expect(program.graph.isEmpty)
     }
 
     @Test
     func `builder stores maxDepth`() {
-        var builder = TestBuilder(maxDepth: 100)
+        let builder = TestBuilder(maxDepth: 100)
         let program = builder.build()
         #expect(program.maxDepth == 100)
     }
 
     @Test
     func `builder with nil maxDepth`() {
-        var builder = TestBuilder(maxDepth: .none)
+        let builder = TestBuilder(maxDepth: .none)
         let program = builder.build()
         #expect(program.maxDepth == nil)
     }

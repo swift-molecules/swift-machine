@@ -1,8 +1,9 @@
-public import Ordinal
-public import Tagged
+import Ordinal
+import Tagged
 extension Machine.Value {
 
     @usableFromInline
+    @safe
     struct _Table: Sendable {
 
         @usableFromInline

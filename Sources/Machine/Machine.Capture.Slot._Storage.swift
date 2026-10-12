@@ -1,8 +1,9 @@
-public import Ordinal
-public import Tagged
+import Ordinal
+import Tagged
 extension Machine.Capture.Slot {
 
     @usableFromInline
+    @safe
     final class _Storage: @unchecked Sendable {
         @usableFromInline
         let payload: UnsafeMutableRawPointer
