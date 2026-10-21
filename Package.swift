@@ -32,7 +32,7 @@ let package = Package(
         .package(
             url: "https://github.com/swift-molecules/swift-graph.git",
             branch: "main"
-        )
+        ),
     ],
     targets: [
         .target(
@@ -40,7 +40,7 @@ let package = Package(
             dependencies: [
                 .product(name: "Ordinal", package: "swift-ordinal"),
                 .product(name: "Tagged", package: "swift-tagged"),
-                .product(name: "Graph", package: "swift-graph")
+                .product(name: "Graph", package: "swift-graph"),
             ]
         ),
         .target(
@@ -60,21 +60,23 @@ let package = Package(
                 .product(name: "Cardinal", package: "swift-cardinal"),
                 .product(name: "Ordinal", package: "swift-ordinal"),
                 .product(name: "Tagged", package: "swift-tagged"),
-                .product(name: "Graph", package: "swift-graph"),.target(name: "Machine")]
+                .product(name: "Graph", package: "swift-graph"), .target(name: "Machine"),
+            ]
         ),
     ],
     swiftLanguageModes: [.v6]
 )
 
 for target in package.targets where ![.system, .binary, .plugin, .macro].contains(target.type) {
-    target.swiftSettings = (target.swiftSettings ?? []) + [
-        .strictMemorySafety(),
-        .enableUpcomingFeature("ExistentialAny"),
-        .enableUpcomingFeature("InternalImportsByDefault"),
-        .enableUpcomingFeature("MemberImportVisibility"),
-        .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
-        .enableUpcomingFeature("InferIsolatedConformances"),
-        .enableExperimentalFeature("Lifetimes"),
-        .treatAllWarnings(as: .error),
-    ]
+    target.swiftSettings =
+        (target.swiftSettings ?? []) + [
+            .strictMemorySafety(),
+            .enableUpcomingFeature("ExistentialAny"),
+            .enableUpcomingFeature("InternalImportsByDefault"),
+            .enableUpcomingFeature("MemberImportVisibility"),
+            .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
+            .enableUpcomingFeature("InferIsolatedConformances"),
+            .enableExperimentalFeature("Lifetimes"),
+            .treatAllWarnings(as: .error),
+        ]
 }

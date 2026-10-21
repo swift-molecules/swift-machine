@@ -1,5 +1,6 @@
 import Ordinal
 import Tagged
+
 extension Machine.Transform {
 
     @safe

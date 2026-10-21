@@ -1,7 +1,7 @@
 import Cardinal
+import Graph
 import Ordinal
 import Tagged
-import Graph
 import Testing
 
 @testable import Machine

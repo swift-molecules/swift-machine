@@ -1,5 +1,6 @@
 import Ordinal
 import Tagged
+
 extension Machine.Capture.Frozen where Mode == Machine.Capture.Mode.Reference {
 
     @inlinable

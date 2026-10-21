@@ -1,6 +1,6 @@
+public import Graph
 import Ordinal
 public import Tagged
-public import Graph
 
 extension Machine {
 
@@ -30,8 +30,7 @@ extension Machine.Program: Sendable where Leaf: Sendable, Mode: Sendable {}
 extension Machine.Program {
 
     @inlinable
-    public subscript(id: Machine.Node<Leaf, Failure, Mode>.ID) -> Machine.Node<Leaf, Failure, Mode>
-    {
+    public subscript(id: Machine.Node<Leaf, Failure, Mode>.ID) -> Machine.Node<Leaf, Failure, Mode> {
         graph[id]
     }
 
