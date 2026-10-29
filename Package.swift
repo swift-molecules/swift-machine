@@ -25,9 +25,7 @@ let package = Package(
             targets: ["Machine Apple Foundation Integration"]
         ),
     ],
-    traits: [
-        .trait(name: "Analyze", description: "Graph analysis of machine programs"),
-    ],
+    traits: [.trait(name: "Analyze", description: "Graph analysis of machine programs")],
     dependencies: [
         .package(url: "https://github.com/swift-atoms/swift-cardinal.git", branch: "main"),
         .package(url: "https://github.com/swift-atoms/swift-tagged.git", branch: "main"),
