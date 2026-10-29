@@ -25,13 +25,18 @@ let package = Package(
             targets: ["Machine Apple Foundation Integration"]
         ),
     ],
+    traits: [
+        .trait(name: "Analyze", description: "Graph analysis of machine programs"),
+        .default(enabledTraits: []),
+    ],
     dependencies: [
         .package(url: "https://github.com/swift-atoms/swift-cardinal.git", branch: "main"),
         .package(url: "https://github.com/swift-atoms/swift-tagged.git", branch: "main"),
         .package(url: "https://github.com/swift-atoms/swift-ordinal.git", branch: "main"),
         .package(
             url: "https://github.com/swift-molecules/swift-graph.git",
-            branch: "main"
+            branch: "main",
+            traits: [.trait(name: "Algorithms", condition: .when(traits: ["Analyze"]))]
         ),
     ],
     targets: [

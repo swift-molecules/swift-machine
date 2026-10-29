@@ -33,12 +33,4 @@ extension Machine.Program {
     public subscript(id: Machine.Node<Leaf, Failure, Mode>.ID) -> Machine.Node<Leaf, Failure, Mode> {
         graph[id]
     }
-
-    @inlinable
-    public var analyze:
-        Graph.Sequential<Machine.Node<Leaf, Failure, Mode>, Machine.Node<Leaf, Failure, Mode>>
-            .Analyze<[Machine.Node<Leaf, Failure, Mode>.ID]>
-    {
-        graph.analyze(using: Machine.Node.extract)
-    }
 }
