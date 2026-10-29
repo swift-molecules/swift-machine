@@ -27,7 +27,6 @@ let package = Package(
     ],
     traits: [
         .trait(name: "Analyze", description: "Graph analysis of machine programs"),
-        .default(enabledTraits: []),
     ],
     dependencies: [
         .package(url: "https://github.com/swift-atoms/swift-cardinal.git", branch: "main"),
