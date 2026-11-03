@@ -1,0 +1,13 @@
+# swift-machine
+
+Use this package when you are writing an interpreter that runs a combinator program, such as a parser, as an explicit stack machine instead of through nested closures. It gives you the program representation and nothing that executes it. Build the program with `Machine.Builder`, which yields a `Machine.Program` whose nodes are `Machine.Node`. Your interpreter carries type-erased intermediate results as `Machine.Value` and keeps them in a `Machine.Value.Arena` while its own stack of `Machine.Frame` records what is pending. If you want a parser that already runs this way, use swift-parser-machine or swift-binary-parser, which supply the interpreter loop.
+
+## Laws
+
+- The package never walks a program. It stores `maxDepth`, the order of `.oneOf` alternatives and the meaning of each `Machine.Frame` case, but enforcing and interpreting them is the interpreter's job.
+- `Machine.Node.adjacent` lists children in evaluation order: `a` before `b` for `.sequence`, alternatives in their declared order for `.oneOf`. It counts `.ref` as an edge, so the graph that `Machine.Program.analyze` sees contains a cycle for every recursive rule. `.leaf`, `.pure` and `.hole` have no edges.
+- To build a recursive rule, allocate `.hole` first, point a `.ref` at its ID, then assign the real node through the builder's subscript. `build()` does not check that every hole has been filled.
+- A capture's ID is the order in which it was inserted into the `Machine.Capture.Store`. `freeze()` consumes the store, so a `Machine.Program` holds a fixed set of captures. Every erased `Machine.Transform`, `Machine.Combine`, `Machine.Next` and `Machine.Finalize.Array` resolves its capture by that index in the frozen set.
+- Copies of a `Machine.Value` share one immutable boxed payload. The payload is destroyed when the last copy goes away. Reading the value as a type other than the one it was made with traps. The same applies when a frozen capture is read with the wrong closure type, and when `Machine.Finalize.Array` reads an element whose type differs from its element type.
+- `Machine.Value.Arena` hands out slots by bumping a counter. `release` empties a slot but never makes it available again, so handles stay distinct until `reset()`. When the slots run out, capacity doubles. `read` leaves the value in place. `release` returns the value and removes it, and a later `read` or `release` of that handle traps.
+- `reset()` clears every occupied slot, rewinds the counter and advances the generation. Using any handle issued before the reset then traps as stale. The generation is a `UInt32` that wraps, so after 2³² resets an old handle validates again.
