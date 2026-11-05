@@ -54,6 +54,15 @@ struct `Machine.Value.Arena Tests` {
     }
 
     @Test
+    func `allocate grows an arena created with zero capacity`() {
+        var arena = Arena(capacity: 0)
+        let first = arena.allocate(Value.make(1))
+        let second = arena.allocate(Value.make(2))
+        #expect(arena.read(first)[as: Int.self] == 1)
+        #expect(arena.read(second)[as: Int.self] == 2)
+    }
+
+    @Test
     func `read returns correct value`() {
         var arena = Arena()
         let handle = arena.allocate(Value.make(123))

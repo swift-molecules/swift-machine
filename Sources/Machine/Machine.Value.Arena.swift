@@ -31,7 +31,7 @@ extension Machine.Value.Arena {
     ) -> Machine.Value<Mode>.Handle {
         let slot = nextSlot
         if Int(slot) >= values.count {
-            values.append(contentsOf: repeatElement(nil, count: values.count))
+            values.append(contentsOf: repeatElement(nil, count: Swift.max(values.count, 1)))
         }
         values[Int(slot)] = value
         nextSlot += 1
