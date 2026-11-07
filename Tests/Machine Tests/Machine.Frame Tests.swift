@@ -261,74 +261,76 @@ struct `Machine.Frame.Sequence Tests` {
     }
 }
 
-@Suite
-struct `Machine.Frame with Extra Tests` {
-    typealias Mode = Machine.Capture.Mode.Reference
-    typealias Store = Machine.Capture.Store<Mode>
-    typealias Value = Machine.Value<Mode>
-    typealias NodeID = Int
-    typealias Checkpoint = Int
-    enum TestError: Swift::Error, Sendable { case failed }
+extension `Machine.Frame Tests` {
+    @Suite
+    struct `Machine.Frame with Extra Tests` {
+        typealias Mode = Machine.Capture.Mode.Reference
+        typealias Store = Machine.Capture.Store<Mode>
+        typealias Value = Machine.Value<Mode>
+        typealias NodeID = Int
+        typealias Checkpoint = Int
+        enum TestError: Swift::Error, Sendable { case failed }
 
-    struct MemoEntry: Equatable, Sendable {
-        var nodeId: NodeID
-        var position: Int
-    }
-
-    typealias FrameWithExtra = Machine.Frame<NodeID, Checkpoint, Mode, TestError, MemoEntry>
-
-    @Test
-    func `extra stores custom data`() {
-        let memo = MemoEntry(nodeId: 42, position: 100)
-        let frame: FrameWithExtra = .extra(memo)
-
-        if case .extra(let entry) = frame {
-            #expect(entry.nodeId == 42)
-            #expect(entry.position == 100)
-        } else {
-            Issue.record("Expected extra frame")
+        struct MemoEntry: Equatable, Sendable {
+            var nodeId: NodeID
+            var position: Int
         }
-    }
 
-    @Test
-    func `frame with Extra can still use other cases`() {
-        var store = Store()
-        let captureID = store.insert({ (x: Int) in x } as @Sendable (Int) -> Int)
-        let transform = Machine.Transform.Erased<Mode>(capture: captureID)
-        let frame: FrameWithExtra = .map(transform: transform)
+        typealias FrameWithExtra = Machine.Frame<NodeID, Checkpoint, Mode, TestError, MemoEntry>
 
-        if case .map = frame {
+        @Test
+        func `extra stores custom data`() {
+            let memo = MemoEntry(nodeId: 42, position: 100)
+            let frame: FrameWithExtra = .extra(memo)
 
-        } else {
-            Issue.record("Expected map frame")
+            if case .extra(let entry) = frame {
+                #expect(entry.nodeId == 42)
+                #expect(entry.position == 100)
+            } else {
+                Issue.record("Expected extra frame")
+            }
         }
-    }
 
-    @Test
-    func `mixing extra and standard frames`() {
-        var store = Store()
-        let captureID = store.insert({ (x: Int) in x * 2 } as @Sendable (Int) -> Int)
-        let transform = Machine.Transform.Erased<Mode>(capture: captureID)
+        @Test
+        func `frame with Extra can still use other cases`() {
+            var store = Store()
+            let captureID = store.insert({ (x: Int) in x } as @Sendable (Int) -> Int)
+            let transform = Machine.Transform.Erased<Mode>(capture: captureID)
+            let frame: FrameWithExtra = .map(transform: transform)
 
-        var frames: [FrameWithExtra] = []
-        frames.append(.map(transform: transform))
-        frames.append(.extra(MemoEntry(nodeId: 1, position: 0)))
-        frames.append(.recursiveExit)
-        frames.append(.extra(MemoEntry(nodeId: 2, position: 10)))
+            if case .map = frame {
 
-        #expect(frames.count == 4)
-
-        if case .map = frames[0] {} else { Issue.record("Expected map at 0") }
-        if case .extra(let e) = frames[1] {
-            #expect(e.nodeId == 1)
-        } else {
-            Issue.record("Expected extra at 1")
+            } else {
+                Issue.record("Expected map frame")
+            }
         }
-        if case .recursiveExit = frames[2] {} else { Issue.record("Expected recursiveExit at 2") }
-        if case .extra(let e) = frames[3] {
-            #expect(e.nodeId == 2)
-        } else {
-            Issue.record("Expected extra at 3")
+
+        @Test
+        func `mixing extra and standard frames`() {
+            var store = Store()
+            let captureID = store.insert({ (x: Int) in x * 2 } as @Sendable (Int) -> Int)
+            let transform = Machine.Transform.Erased<Mode>(capture: captureID)
+
+            var frames: [FrameWithExtra] = []
+            frames.append(.map(transform: transform))
+            frames.append(.extra(MemoEntry(nodeId: 1, position: 0)))
+            frames.append(.recursiveExit)
+            frames.append(.extra(MemoEntry(nodeId: 2, position: 10)))
+
+            #expect(frames.count == 4)
+
+            if case .map = frames[0] {} else { Issue.record("Expected map at 0") }
+            if case .extra(let e) = frames[1] {
+                #expect(e.nodeId == 1)
+            } else {
+                Issue.record("Expected extra at 1")
+            }
+            if case .recursiveExit = frames[2] {} else { Issue.record("Expected recursiveExit at 2") }
+            if case .extra(let e) = frames[3] {
+                #expect(e.nodeId == 2)
+            } else {
+                Issue.record("Expected extra at 3")
+            }
         }
     }
 }
