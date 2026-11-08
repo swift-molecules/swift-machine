@@ -39,7 +39,7 @@ extension Machine.Value.Arena {
     }
 
     @inlinable
-    package func validateHandle(_ handle: Machine.Value<Mode>.Handle, operation: StaticString) {
+    func validateHandle(_ handle: Machine.Value<Mode>.Handle, operation: StaticString) {
         guard handle.generation == generation else {
             fatalError(
                 "Arena.\(operation): stale handle (generation \(handle.generation), current \(generation))"

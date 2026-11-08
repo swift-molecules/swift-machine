@@ -271,7 +271,7 @@ extension `Machine.Frame Tests` {
         typealias Checkpoint = Int
         enum TestError: Swift::Error, Sendable { case failed }
 
-        struct MemoEntry: Equatable, Sendable {
+        fileprivate struct MemoEntry: Equatable, Sendable {
             var nodeId: NodeID
             var position: Int
         }
